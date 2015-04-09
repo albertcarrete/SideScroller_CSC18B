@@ -1,5 +1,7 @@
 package layers;
 
+import handlers.VEIN;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -25,6 +27,7 @@ import appstate.AppStateManager;
  * */
 public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	
+	VEIN _v;
 	public static final int WIDTH = 600;  // 320
 	public static final int HEIGHT = 330; // 240
 	public static final int SCALE = 1; // Master Scale for Graphics
@@ -50,9 +53,12 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	public String username;
 	LayeredPanel root;
 	
-	public GeneralGraphicsLayer(LayeredPanel root){	
+	public GeneralGraphicsLayer(LayeredPanel root, VEIN v){	
 		super();
-		
+		_v = v;
+		_v.extendReach(this);
+        this.root = _v.getRootLayer();
+
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		screenWidth 	= (int)(screenSize.getWidth());
 		screenHeight 	= (int)(screenSize.getHeight() - 50);
@@ -75,7 +81,6 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
         drawing = GraphicsEnvironment.getLocalGraphicsEnvironment()
         		.getDefaultScreenDevice().getDefaultConfiguration()
                 .createCompatibleImage(WIDTH, HEIGHT); // it will stretch if you don't multiply this by scale.
-        this.root = root;
                 
 	}
 	

@@ -1,5 +1,7 @@
 package core;
 
+import handlers.VEIN;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,6 +18,8 @@ import overlays.SettingsOverlay;
  */
 public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	
+	VEIN _v;
+
 	public static final int WIDTH = 600; 	// 600 // 512  // 480
 	public static final int HEIGHT = 350; 	// 450 // 448  // 270
 	public static final int SCALE = 2; 		// Master Scale for Container
@@ -35,7 +39,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	GeneralLayer loginLayer;
 	RegisterLayer registerLayer; 
 	SettingsOverlay settingsOverlay;
-
+	
 	boolean loginOpen = false;
 	boolean overlay = false;
 	Point origin;
@@ -44,7 +48,8 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 		
 		super();
 //		setDoubleBuffered(true);
-		
+		_v = new VEIN();
+		_v.extendReach(this);
 		
 		/* Size of Current Screen */
 		Dimension currScreenSize 	= Toolkit.getDefaultToolkit().getScreenSize();
@@ -81,7 +86,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	private void init(){
 						
 		/* Graphics Window Layer */
-		gLayer = new GeneralGraphicsLayer(this);
+		gLayer = new GeneralGraphicsLayer(this,_v);
 		JLP.add(gLayer, new Integer(0));
 		
 //		GeneralLayer layer2 = new GeneralLayer(origin);

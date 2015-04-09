@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.Rectangle;
 
+import overlays.Debugger;
 import core.LayeredPanel;
 import tileMap.TileMap;
 import tileMap.Tile;
@@ -64,6 +65,8 @@ public abstract class MapObject {
 	protected double jumpStart;
 	protected double stopJumpSpeed;
 	
+	protected Debugger debugger;
+
 	// constructor
 	public MapObject(TileMap tm) {
 		tileMap = tm;
@@ -84,13 +87,19 @@ public abstract class MapObject {
 				cheight
 		);
 	}
-	
+	public void setDebugger(Debugger debugger){
+		this.debugger = debugger;
+	}
 	public void calculateCorners(double x, double y) {
-		
 		int leftTile = (int)(x - cwidth / 2) / tileSize;
 		int rightTile = (int)(x + cwidth / 2 - 1) / tileSize;
 		int topTile = (int)(y - cheight / 2) / tileSize;
 		int bottomTile = (int)(y + cheight / 2 - 1) / tileSize;
+		
+		
+		if(debugger != null){
+			debugger.sendToScreen("LRTB Tiles", leftTile,rightTile,topTile,bottomTile);
+		}
 		
 		int tl = tileMap.getType(topTile, leftTile);
 		int tr = tileMap.getType(topTile, rightTile);
@@ -102,7 +111,13 @@ public abstract class MapObject {
 		bottomLeft = bl == Tile.BLOCKED;
 		bottomRight = br == Tile.BLOCKED;
 		
+		if(debugger != null){
+			debugger.sendToScreen("TB Block", topLeft,topRight,bottomLeft,bottomRight);
+		}
+		
 	}
+	/*For debug purposes*/
+
 	
 	public void checkTileMapCollision() {
 		
@@ -115,7 +130,12 @@ public abstract class MapObject {
 		xtemp = x;
 		ytemp = y;
 		
+		if(debugger != null){
+			debugger.sendToScreen("curr",currCol,currRow);
+			debugger.sendToScreen("dest",xdest,ydest);
+		}
 		calculateCorners(x, ydest);
+		
 		if(dy < 0) {
 			if(topLeft || topRight) {
 				dy = 0;
@@ -139,6 +159,7 @@ public abstract class MapObject {
 		calculateCorners(xdest, y);
 		if(dx < 0) {
 			if(topLeft || bottomLeft) {
+				
 				dx = 0;
 				xtemp = currCol * tileSize + cwidth / 2;
 			}

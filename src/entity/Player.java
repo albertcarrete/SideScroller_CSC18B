@@ -8,12 +8,15 @@ import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
 
+import overlays.Debugger;
+
 import com.github.nkzawa.engineio.client.Socket;
 
 import socket.SMSocket;
 import tileMap.TileMap;
 
 public class Player extends MapObject{
+	
 	// player stuff
 	private int health;
 	private int maxHealth;
@@ -23,7 +26,7 @@ public class Player extends MapObject{
 	private boolean flinching;
 	private long flinchTimer;
 	
-	// fireball
+	// Fireball
 	private boolean firing;
 	private int fireCost;
 	private int fireBallDamage;
@@ -51,15 +54,18 @@ public class Player extends MapObject{
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
+	
 	private SMSocket socket;
 	private String username;
 	
 	
-	public Player(TileMap tm,SMSocket socket,String username) {
+	public Player(TileMap tm,SMSocket socket,String username,Debugger debugger) {
 		
 		super(tm);
+		debugger = debugger;
 		this.socket = socket;
 		this.username = username;
+		this.debugger = debugger;
 		width = 30;
 		height = 30;
 		cwidth = 20;
@@ -88,14 +94,11 @@ public class Player extends MapObject{
 		
 		// load sprites
 		try {
-			
-			BufferedImage spritesheet = ImageIO.read(
-				getClass().getResourceAsStream(
-					"/Sprites/Player/customplayersprite.gif"
-				)
-			);
+			// Load the player sprite
+			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/customplayersprite.gif"));
 			
 			sprites = new ArrayList<BufferedImage[]>();
+			
 			for(int i = 0; i < 7; i++) {
 				
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
@@ -103,29 +106,19 @@ public class Player extends MapObject{
 				for(int j = 0; j < numFrames[i]; j++) {
 					
 					if(i != 6) {
-						bi[j] = spritesheet.getSubimage(
-								j * width,
-								i * height,
-								width,
-								height
-						);
+						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
 					}
 					else {
-						bi[j] = spritesheet.getSubimage(
-								j * width * 2,
-								i * height,
-								width,
-								height
-						);
+						bi[j] = spritesheet.getSubimage(j*width*2, i*height, width, height);
 					}
 					
 				}
 				
 				sprites.add(bi);
 				
-			}
+			} // end for
 			
-		}
+		} // end try
 		catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -183,9 +176,9 @@ public class Player extends MapObject{
 		}
 		
 		// cannot move while attacking, except in air
-		if(
-		(currentAction == SCRATCHING || currentAction == FIREBALL) &&
-		!(jumping || falling)) {
+		if((	currentAction == SCRATCHING 
+				|| currentAction == FIREBALL) &&
+				!(jumping || falling)) {
 			dx = 0;
 		}
 		
@@ -285,6 +278,11 @@ public class Player extends MapObject{
 		}
 		
 	}
+	
+	public int getCurrentAnim(){
+		return currentAction;
+	}
+	
 	
 	public void draw(Graphics2D g) {
 		
