@@ -6,7 +6,11 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
+
 import javax.imageio.ImageIO;
+
+import overlays.DebugOverlay;
+import overlays.Debugger;
 import socket.SocketController;
 import entity.NetPlayer;
 import entity.Player;
@@ -23,7 +27,8 @@ public class GameState extends AppState{
 	private TileMap tileMap;
 	private Player player;
 	private Background bg;
-
+	private DebugOverlay debugOverlay;
+	private Debugger debugger;
 	/*MULTIPLAYER*/
 	private SMSocket socket;
 	public String username;
@@ -34,6 +39,7 @@ public class GameState extends AppState{
 		this.asm = asm;
 		this.layer = layer;
 		this.username = layer.username;
+		debugOverlay = new DebugOverlay();
 		networkedPlayers = new ArrayList<NetPlayer>();
 
 	}
@@ -63,7 +69,9 @@ public class GameState extends AppState{
 			e.printStackTrace();
 		}
 		/* Position current player's pawn */
-		player = new Player(tileMap,socket,name);
+		debugger = new Debugger();
+
+		player = new Player(tileMap,socket,name,debugger);
 		player.setPosition(100, 100);
 	};
 	
@@ -71,6 +79,8 @@ public class GameState extends AppState{
 		/* HACK: If player is not setup yet, don't update */
 		if(player != null){
 			player.update();
+			debugger.sendToScreen("position", player.getx(),player.gety());
+			debugger.sendToScreen("size", player.getWidth(),player.getHeight(),player.getCHeight(),player.getCHeight());
 		}
 		/* Check for networked players, then update them */
 		if(networkedPlayers.size() > 0){
@@ -89,6 +99,7 @@ public class GameState extends AppState{
 		bg.draw(g);
 		tileMap.draw(g);
 		player.draw(g);
+		debugger.draw(g);
 		if(networkedPlayers.size() > 0){
 			for(NetPlayer netPlayer:networkedPlayers){
 				netPlayer.draw(g);
