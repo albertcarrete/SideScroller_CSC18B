@@ -1,5 +1,7 @@
 package core;
 
+import handlers.Resolution;
+import handlers.ResolutionHandler;
 import handlers.VEIN;
 
 import java.awt.*;
@@ -11,6 +13,7 @@ import javax.swing.*;
 
 import layers.*;
 import overlays.SettingsOverlay;
+import serializable.ReadSettingsFile;
 
 /* LayeredPanel
  * This JPanel class is the root panel that all the other app panels connect 
@@ -19,6 +22,7 @@ import overlays.SettingsOverlay;
 public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	
 	VEIN _v;
+	JFrame parent;
 
 	public static final int WIDTH = 600; 	// 600 // 512  // 480
 	public static final int HEIGHT = 350; 	// 450 // 448  // 270
@@ -43,34 +47,48 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	boolean loginOpen = false;
 	boolean overlay = false;
 	Point origin;
-	
-	public LayeredPanel(){
+	private int suboption[];
+
+	public LayeredPanel(JFrame parent){
 		
 		super();
 //		setDoubleBuffered(true);
 		_v = new VEIN();
 		_v.extendReach(this);
+		this.parent = parent;
 		
-		/* Size of Current Screen */
-		Dimension currScreenSize 	= Toolkit.getDefaultToolkit().getScreenSize();
-		screenW 				= (int)(currScreenSize.getWidth());
-		screenH 				= (int)(currScreenSize.getHeight());
-		System.out.println("Screen width: " + screenW + " and screen height: " + screenH);
+		/*Determine screen size*/
+		suboption = new int[4];
+		ReadSettingsFile readSettings = new ReadSettingsFile();
+		readSettings.openFile();
+		readSettings.readSettings(suboption);
+		readSettings.closeFile();
+		
+		ResolutionHandler resolutionHandler = new ResolutionHandler();
+		Resolution settingsRes = resolutionHandler.getResolutions(suboption[0]);
+		setHeight(settingsRes.getHeight());
+		setWidth(settingsRes.getWidth());
 			
 		
-		
+        setBorder(BorderFactory.createLineBorder(Color.RED));
+
 		/* Root Panel Setting */
+//        setLayout(null);
+//        setLayout(new FlowLayout());
+//        setLayout(new BorderLayout());
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(screenW, screenH));
+//        setBounds(0,0,screenW, screenH);
 		setFocusable(true);
 		requestFocus();
-
 		
 		/* Layered Panel Setting */
 		JLP = new JLayeredPane();
 		JLP.setPreferredSize(new Dimension(screenW, screenH));
-		System.out.println("Screen width: " + screenW + " and screen height: " + screenH);
+//        JLP.setBounds(0,0,screenW, screenH);
 
+		System.out.println("Screen width: " + screenW + " and screen height: " + screenH);
+		
 		add(JLP);
 	}
 	
@@ -171,4 +189,31 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 		gLayer.keyReleased(key.getKeyCode());
 	}
 	
+	public void applySettings(){
+		System.out.println("Refreshed from resolution: " + screenW + screenH);
+
+		//TODO consolidate this with its first call in the constructor
+		ReadSettingsFile readSettings = new ReadSettingsFile();
+		readSettings.openFile();
+		readSettings.readSettings(suboption);
+		readSettings.closeFile();
+		
+		ResolutionHandler resolutionHandler = new ResolutionHandler();
+		Resolution settingsRes = resolutionHandler.getResolutions(suboption[0]);
+		setHeight(settingsRes.getHeight());
+		setWidth(settingsRes.getWidth());
+		
+		System.out.println("Refreshed to resolution: " + screenW + screenH);
+//		setBounds(0,0,screenW,screenH);
+//		JLP.setBounds(0,0,screenW,screenH);
+
+//		setLayout(null);
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setPreferredSize(new Dimension(screenW, screenH));
+        JLP.setPreferredSize(new Dimension(screenW, screenH));
+
+        parent.pack();
+
+//        revalidate();
+	}
 }

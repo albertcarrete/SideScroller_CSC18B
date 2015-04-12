@@ -27,9 +27,8 @@ public class SettingsState extends AppState{
 	private int screenH;
 	
 	private BufferedImage bgImage;
-	private Color titleColor;
-	private Font titleFont;
-
+	
+	// Selectors
 	private int currentChoice;
 	private int subChoice;
 	
@@ -43,16 +42,13 @@ public class SettingsState extends AppState{
 	public int suboption[];
 	public int currSubOption;
 	private String options[] ={
-			"resolution",
-			"debug",
-			"exit"
+			"RESOLUTION",
+			"DEBUG",
+			"EXIT"
 	};
 	
-	
-	public SettingsState(AppStateManager asm, GeneralGraphicsLayer parent){
-		System.out.println("Constructor: Settings State");
-		
-		// Retrieve dependencies
+	public SettingsState(AppStateManager asm, GeneralGraphicsLayer parent){		
+		// Set dependencies
 		this.asm = asm;
 		this.parent = parent;
 		
@@ -63,10 +59,10 @@ public class SettingsState extends AppState{
 		currentChoice = 0;
 		
 
-		
 		// Menu Map
+		//TODO make this list dynamic 
 		hm = new LinkedHashMap<String,String[]>();
-		hm.put( "RESOLUTION", new String[]{ "FULLSCREEN", "NATIVE SCREEN" } );
+		hm.put( "RESOLUTION", new String[]{ "FULLSCREEN","1920X1080","720X480","NATIVE" } );
 		hm.put( "DEBUG", new String[]{ "ON", "OFF" } );
 		hm.put("EXIT",new String[]{"SAVE AND EXIT", "DISCARD AND EXIT"});
 		
@@ -76,8 +72,6 @@ public class SettingsState extends AppState{
 		}
 		
 		try{
-			titleColor = new Color(128,0,0);
-			titleFont = new Font("Century Gothic",Font.PLAIN, 40);
 			bgImage = ImageIO.read(getClass().getResourceAsStream("/titlebg.gif"));
 		}
 		catch(Exception e){
@@ -88,21 +82,20 @@ public class SettingsState extends AppState{
 
 	}
 	public void init(){
-//		parent.triggerSettingsOverlay();
-		System.out.println("We should be reading in the settings file here.");
-		ReadSettingsFile rSet = new ReadSettingsFile();
-		rSet.openFile();
-		rSet.readSettings(suboption);
-		rSet.closeFile();
+//		parent.triggerSettingsOverlay()
+		
+		/* Read in the serialized settings file*/
+		ReadSettingsFile readSettings = new ReadSettingsFile();
+		readSettings.openFile();
+		readSettings.readSettings(suboption);
+		readSettings.closeFile();
 	};
 	public void update(){
 		currSubOption  = suboption[currentChoice];
 
 	};
+	// TODO Remove this function from its base class
 	public void draw(java.awt.Graphics g){
-//		g.setColor(titleColor);
-//		g.setFont(titleFont);
-//		g.drawString("Settings", 150, titleY);
 	};
 	
 	/* Draw to Screen ===
@@ -133,7 +126,20 @@ public class SettingsState extends AppState{
 		}
 
 	}; // end method drawToScreen
-	
+	public void incSubOption(){
+		currSubOption++;
+		if(currSubOption > hm.get(options[currentChoice]).length-1){
+			currSubOption = 0;
+		}
+		suboption[currentChoice] = currSubOption;						
+	}
+	public void decSubOption(){
+		currSubOption--;
+		if(currSubOption == -1){
+			currSubOption = hm.get(options[currentChoice]).length-1;
+		}
+		suboption[currentChoice] = currSubOption;
+	}
 	public void keyPressed(int k){
 		if(k==KeyEvent.VK_ENTER){
 //			subChoice--;
@@ -150,33 +156,23 @@ public class SettingsState extends AppState{
 					process.addSettings(suboption[0], suboption[1]);
 					process.closeFile();
 					asm.setState(AppStateManager.MENUSTATE);
+					parent.applySettings();
 				}
 
 			}else{
-				currSubOption++;
-				if(currSubOption == 2){
-					currSubOption = 0;
-				}
-				suboption[currentChoice] = currSubOption;				
-			}
-
+				incSubOption();				
 			
-//			System.out.println("PRESSED THE ENTER KEY!!!");
-//			asm.setState(AppStateManager.MENUSTATE);
+			}
 		}
+		
+		
+		// Select Next Sub Option
 		if(k==KeyEvent.VK_RIGHT){
-			currSubOption++;
-			if(currSubOption == 2){
-				currSubOption = 0;
-			}
-			suboption[currentChoice] = currSubOption;						
+			incSubOption();				
 		}
+		// Select Next Sub Option
 		if(k== KeyEvent.VK_LEFT){
-			currSubOption--;
-			if(currSubOption == -1){
-				currSubOption = 1;
-			}
-			suboption[currentChoice] = currSubOption;
+			decSubOption();
 		}
 		if(k==KeyEvent.VK_UP){
 			currentChoice--;

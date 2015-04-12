@@ -72,11 +72,11 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 		float getMargins = (screenWidth - screenWidthConstraint) / 2;
 		int marginsNormalized = (int)getMargins;
 		
-		setPreferredSize(new Dimension(screenWidth, screenHeight));
+		setPreferredSize(new Dimension(root.getWidth(), root.getHeight()));
 		setFocusable(false);
         setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
-		setBounds(0, 0, screenWidth, screenHeight);
+		setBounds(0, 0, root.getWidth(), root.getHeight());
 		asm = new AppStateManager(this);
         drawing = GraphicsEnvironment.getLocalGraphicsEnvironment()
         		.getDefaultScreenDevice().getDefaultConfiguration()
@@ -155,7 +155,8 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 		drawingBoard.dispose();
 		
         Graphics tempGraphics = g.create();
-        tempGraphics.drawImage(drawing, 0, 0, screenWidthConstraint, screenHeight, null);
+        tempGraphics.drawImage(drawing, 0, 0, root.getWidth(), root.getHeight(), null);
+//        tempGraphics.drawImage(drawing, 0, 0, screenWidthConstraint, screenHeight, null);
         tempGraphics.dispose();
 	}
 	
@@ -200,5 +201,9 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	public void updateMessages(String message){
 		System.out.println(message);
 	}
-	
+	public void applySettings(){
+		root.applySettings();
+		setBounds(0, 0, root.getWidth(), root.getHeight());
+//		repaint();
+	}
 }

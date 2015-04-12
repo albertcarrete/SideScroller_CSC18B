@@ -34,61 +34,77 @@ public class GeneralLayer extends JPanel {
 		
 		super();	
 		this.layer = layer;
-		loginFont = new Font("Arial",Font.BOLD, 20);
+		
+		int calculatedWidth 	= (int)(layer.getWidth() / 2);
+		int calculatedHeight 	= (int)(layer.getHeight() / 2);
+		
+		/* Scale everything to new size */
+		
+		double scale = (layer.getWidth()/1920.0);
+		System.out.println("scale is" + scale);
+			
+		loginFont = new Font("Arial",Font.BOLD, (int)(20*scale));
 		setFont(loginFont);
 		bg_overlay = new Color(22,22,22,80);
 		
-		
-		h1 			= new Font ("Arial",Font.BOLD, 25);
-		h2 			= new Font ("Arial",Font.BOLD, 16);
+		int h1_px 	= (int)(25 * scale);
+		System.out.println("Scaled font is " + h1_px);
+		h1 			= new Font ("Arial",Font.BOLD,h1_px);
+		h2 			= new Font ("Arial",Font.BOLD, (int)(16*scale));
 
 		h1_color	= new Color(208,177,131);
 		h2_color 	= new Color(255,255,255);
-		inputText	= new Font("Arial", Font.PLAIN,35);
+		inputText	= new Font("Arial", Font.PLAIN,(int)(35*scale));
 		
-
-		setPreferredSize(new Dimension(WIDTH,HEIGHT));
+		
+		/* Center the component to the parent component */
+		int sideMargin = calculatedWidth / 2;
+		int topMargin = calculatedHeight / 2;
+		setPreferredSize(new Dimension(calculatedWidth,calculatedHeight));
 		setOpaque(true);
 		setBackground(bg_overlay);
 //        setBorder(BorderFactory.createLineBorder(Color.WHITE));
         setLayout(null);
-        setBounds(origin.x, origin.y, WIDTH, HEIGHT);
+        setBounds(sideMargin, topMargin, calculatedWidth, calculatedHeight);
 
 //        System.out.println(menu);
         
-        int li = 80;
-        int leftMargin = 30;
-        int inputBoxHeight = 50;
+        int li = (int)(80*scale);
+        int leftMargin = (int)(108*scale);
+        int inputBoxHeight = (int)(50*scale);
+        
         if(menu == 0){
         	
+        	// pos x y & size width height
         	JLabel titleLabel = new JLabel("Login");
-        	titleLabel.setBounds(leftMargin,10,100,40);
         	titleLabel.setFont(h1);
         	titleLabel.setForeground(h2_color);
+        	titleLabel.setBounds((int)(calculatedWidth * .10),0,(int)(calculatedWidth * .90),(int)(calculatedHeight*.10));
         	
     		JLabel userLabel = new JLabel("User");
-    		userLabel.setBounds(leftMargin,li,100,25);
+    		userLabel.setBounds((int)(calculatedWidth * .10),(int)(calculatedHeight * .10),(int)(calculatedWidth * .90),(int)(calculatedHeight*.05));
     		userLabel.setFont(h2);
     		userLabel.setForeground(h2_color);
-    	
+    		
+    		
     		userText = new JTextField(20);
-    		userText.setBounds(leftMargin,li+25,560,inputBoxHeight);
+    		userText.setBounds((int)(calculatedWidth * .10),(int)(calculatedHeight * .15),(int)(calculatedWidth * .80),(int)(calculatedHeight*.10));
     		userText.setFont(inputText);
 
     		JLabel passwordLabel = new JLabel("Password");
-    		passwordLabel.setBounds(leftMargin,li+75,150,25);
+    		passwordLabel.setBounds((int)(calculatedWidth * .10),(int)(calculatedHeight * .25),(int)(calculatedWidth * .80),(int)(calculatedHeight*.05));
     		passwordLabel.setFont(h2);
     		passwordLabel.setForeground(h2_color);
 
     		passwordText = new JPasswordField(20);
-    		passwordText.setBounds(leftMargin,li+100,560,inputBoxHeight);
+    		passwordText.setBounds((int)(calculatedWidth * .10),(int)(calculatedHeight * .30),(int)(calculatedWidth * .80),(int)(calculatedHeight*.10));
     		userText.setFont(inputText);
 
     		JButton loginButton = new JButton("Login");
-    		loginButton.setBounds(leftMargin,li+150,90,35);
+    		loginButton.setBounds((int)(calculatedWidth * .10),(int)(calculatedHeight * .40),(int)(calculatedWidth * .40),(int)(calculatedHeight*.10));
 
     		JButton registerButton = new JButton("Register a new account");
-    		registerButton.setBounds(390,li+150,200,35);
+    		registerButton.setBounds((int)(calculatedWidth * .50),(int)(calculatedHeight * .40),(int)(calculatedWidth * .40),(int)(calculatedHeight*.10));
     		
     		textArea = new JTextArea(20,20);
     		textArea.setBounds(leftMargin, li+200, 560, 100);

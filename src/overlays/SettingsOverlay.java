@@ -26,11 +26,15 @@ public class SettingsOverlay extends JPanel{
 		super();	
 		this.parent = parent;
 		
-		setPreferredSize(new Dimension(500,500));
+		int width = (int)(parent.getWidth() / 2);
+		int height = (int)(parent.getHeight() / 2);
+
+		
+		setPreferredSize(new Dimension(width,height));
 		setOpaque(true);
 	    setBorder(BorderFactory.createLineBorder(Color.RED));
 	    setLayout(null);
-	    setBounds(0, 0, 500, 500);
+	    setBounds(0, 0, width, height);
 	    
 		overlay_color = new Color(22,22,22,80);
 		setBackground(overlay_color);
@@ -55,9 +59,9 @@ public class SettingsOverlay extends JPanel{
 	}
 	public void applySettings(){
 		System.out.println("Applying new settings");
-		parent.setHeight(600);
-		parent.setWidth(330);
-		parent.setPreferredSize(new Dimension(100, 100));
+//		parent.setHeight(600);
+//		parent.setWidth(330);
+//		parent.setPreferredSize(new Dimension(100, 100));
 		repaint();
 	}
 
