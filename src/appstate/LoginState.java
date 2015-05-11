@@ -1,19 +1,19 @@
 package appstate;
 
 import java.awt.Color;
-import java.awt.Font;
+//import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
 import layers.GeneralGraphicsLayer;
-import tileMap.Background;
+//import tileMap.Background;
 
 public class LoginState extends AppState{
 	// dependencies
-	private Background bg;
-	private AppStateManager asm;
+//	private Background bg;
+//	private AppStateManager asm;
 	private GeneralGraphicsLayer layer;
 	// images 
 	private BufferedImage loginBoxImage;

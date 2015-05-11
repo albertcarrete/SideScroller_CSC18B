@@ -11,6 +11,11 @@ import core.LayeredPanel;
 
 public class RegisterLayer extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
 	public static final int SCALE = 2;
@@ -96,7 +101,7 @@ public class RegisterLayer extends JPanel {
 	public void checkValues(){
 		
 		boolean errors = false;
-		ArrayList<String> errorCodes = new ArrayList();
+		ArrayList<String> errorCodes = new ArrayList<String>();
 		
 		if(!(emailText.getText().matches("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"))){
 			errorCodes.add("Email invalid");

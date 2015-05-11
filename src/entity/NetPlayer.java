@@ -16,12 +16,12 @@ public class NetPlayer extends MapObject{
 	
 	// animation actions
 	private static final int IDLE = 0;
-	private static final int WALKING = 1;
-	private static final int JUMPING = 2;
-	private static final int FALLING = 3;
-	private static final int GLIDING = 4;
-	private static final int FIREBALL = 5;
-	private static final int SCRATCHING = 6;
+//	private static final int WALKING = 1;
+//	private static final int JUMPING = 2;
+//	private static final int FALLING = 3;
+//	private static final int GLIDING = 4;
+//	private static final int FIREBALL = 5;
+//	private static final int SCRATCHING = 6;
 	
 	private String username;
 	

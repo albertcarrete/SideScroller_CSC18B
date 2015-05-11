@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 
 import overlays.Debugger;
 
-import com.github.nkzawa.engineio.client.Socket;
+//import com.github.nkzawa.engineio.client.Socket;
 
 import socket.SMSocket;
 import tileMap.TileMap;
@@ -22,20 +22,20 @@ public class Player extends MapObject{
 	private int maxHealth;
 	private int fire;
 	private int maxFire;
-	private boolean dead;
+//	private boolean dead;
 	private boolean flinching;
 	private long flinchTimer;
 	
 	// Fireball
 	private boolean firing;
-	private int fireCost;
-	private int fireBallDamage;
+//	private int fireCost;
+//	private int fireBallDamage;
 	//private ArrayList<FireBall> fireBalls;
 	
 	// scratch
 	private boolean scratching;
-	private int scratchDamage;
-	private int scratchRange;
+//	private int scratchDamage;
+//	private int scratchRange;
 	
 	// gliding
 	private boolean gliding;
@@ -62,7 +62,7 @@ public class Player extends MapObject{
 	public Player(TileMap tm,SMSocket socket,String username,Debugger debugger) {
 		
 		super(tm);
-		debugger = debugger;
+//		debugger = debugger;
 		this.socket = socket;
 		this.username = username;
 		this.debugger = debugger;
@@ -84,12 +84,12 @@ public class Player extends MapObject{
 		health = maxHealth = 5;
 		fire = maxFire = 2500;
 		
-		fireCost = 200;
-		fireBallDamage = 5;
-		//fireBalls = new ArrayList<FireBall>();
-		
-		scratchDamage = 8;
-		scratchRange = 40;
+//		fireCost = 200;
+//		fireBallDamage = 5;
+//		//fireBalls = new ArrayList<FireBall>();
+//		
+//		scratchDamage = 8;
+//		scratchRange = 40;
 		
 		
 		// load sprites

@@ -2,21 +2,21 @@ package socket;
 
 import java.net.URISyntaxException;
 
-import org.json.JSONArray;
+//import org.json.JSONArray;
 import org.json.JSONObject;
 
-import appstate.AppState;
+//import appstate.AppState;
 import appstate.GameState;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import layers.GeneralGraphicsLayer;
+//import layers.GeneralGraphicsLayer;
 
 public class SMSocket {
 	/* Connect to URL */
-	private String URL;
+//	private String URL;
 	final Socket socket; // Current socket
 	private GameState game;
 	private long startTime = System.nanoTime(); 

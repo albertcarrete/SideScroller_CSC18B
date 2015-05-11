@@ -7,7 +7,6 @@ import handlers.VEIN;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
@@ -21,6 +20,10 @@ import serializable.ReadSettingsFile;
  */
 public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	VEIN _v;
 	JFrame parent;
 
@@ -34,8 +37,6 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	private JLayeredPane JLP;
 	
 	private Thread thread; 
-	private BufferedImage image;
-	private Graphics2D g;
 	
 	private int screenW;
 	private int screenH;

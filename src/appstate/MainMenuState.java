@@ -5,16 +5,15 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import layers.GeneralGraphicsLayer;
-import tileMap.Background;
 
 public class MainMenuState extends AppState{
 	
-	private Background bg;
+//	private Background bg;
 	private AppStateManager asm;
 	private GeneralGraphicsLayer layer;
-	private int titleY;
-	private int titleX;
-	
+//	private int titleY;
+//	private int titleX;
+//	
 	
 	private int currentChoice;
 	private String[] options = {
@@ -23,9 +22,9 @@ public class MainMenuState extends AppState{
 		"QUIT"
 	};
 
-	private Color titleColor;
-	private Font titleFont;
-	private Color menuColor;
+//	private Color titleColor;
+//	private Font titleFont;
+//	private Color menuColor;
 	private Font menuFont;
 	private Color selectedColor;
 
@@ -47,14 +46,14 @@ public class MainMenuState extends AppState{
 			e.printStackTrace();
 		}
 
-		titleY = 0;
-		titleX = 0;
+//		titleY = 0;
+//		titleX = 0;
 		currentChoice = 0;
 	}
 	// Initializer
 	public void init(){
-		titleY = 0;
-		titleX = 0;
+//		titleY = 0;
+//		titleX = 0;
 		currentChoice = 0;
 	};
 	public void update(){
@@ -74,7 +73,7 @@ public class MainMenuState extends AppState{
 		
         drawingBoard.setColor(Color.WHITE);
 
-		titleFont = new Font("Century Gothic",Font.PLAIN, 40);
+//		titleFont = new Font("Century Gothic",Font.PLAIN, 40);
 		menuFont = new Font("Arial",Font.BOLD, 15);
 
 		drawingBoard.setFont(menuFont);
@@ -176,24 +175,24 @@ public class MainMenuState extends AppState{
 		
 		if(k==KeyEvent.VK_UP){
 			
-			titleY--;
+//			titleY--;
 			currentChoice--;
 			if(currentChoice == -1){
 				currentChoice = options.length -1;
 			}
 		}
 		if(k==KeyEvent.VK_DOWN){
-			titleY++;
+//			titleY++;
 			currentChoice++;
 			if(currentChoice == options.length){
 				currentChoice = 0;
 			}
 		}
 		if(k==KeyEvent.VK_LEFT){
-			titleX--;
+//			titleX--;
 		}
 		if(k==KeyEvent.VK_RIGHT){
-			titleX++;
+//			titleX++;
 		}
 	
 		

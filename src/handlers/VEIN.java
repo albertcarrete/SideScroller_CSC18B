@@ -6,13 +6,11 @@ import layers.GeneralGraphicsLayer;
 /* Handles levels of vision for the classes it holds*/
 public class VEIN {
 	
-	DebugHandler DH;
 	LayeredPanel rootLayer;
 	GeneralGraphicsLayer graphicsLayer;
 
 	public VEIN(){
 		
-		DH = new DebugHandler();
 	}
 	
 	

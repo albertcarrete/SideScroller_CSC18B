@@ -1,15 +1,9 @@
 package appstate;
 
-import java.awt.Color;
-import java.awt.Font;
+
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
-
-import overlays.DebugOverlay;
 import overlays.Debugger;
 import socket.SocketController;
 import entity.NetPlayer;
@@ -23,11 +17,11 @@ public class GameState extends AppState{
 		
 	/* CORE */
 	private AppStateManager asm;
-	private GeneralGraphicsLayer layer;
+//	private GeneralGraphicsLayer layer;
 	private TileMap tileMap;
 	private Player player;
 	private Background bg;
-	private DebugOverlay debugOverlay;
+//	private DebugOverlay debugOverlay;
 	private Debugger debugger;
 	/*MULTIPLAYER*/
 	private SMSocket socket;
@@ -37,9 +31,9 @@ public class GameState extends AppState{
 	public GameState(AppStateManager asm, GeneralGraphicsLayer layer){
 				
 		this.asm = asm;
-		this.layer = layer;
+//		this.layer = layer;
 		this.username = layer.username;
-		debugOverlay = new DebugOverlay();
+//		debugOverlay = new DebugOverlay();
 		networkedPlayers = new ArrayList<NetPlayer>();
 
 	}

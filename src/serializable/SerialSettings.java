@@ -3,6 +3,11 @@ package serializable;
 import java.io.Serializable;
 
 public class SerialSettings implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private int resolution;
 	private int debug;
 	

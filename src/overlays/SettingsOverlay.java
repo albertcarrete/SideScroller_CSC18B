@@ -15,16 +15,20 @@ import core.LayeredPanel;
 public class SettingsOverlay extends JPanel{
 	
 	
-	private LayeredPanel parent;
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+//	private LayeredPanel parent;
 	private Color overlay_color;
 	
 	// Components
-	JComboBox resolutionComboBox;
+	JComboBox<String> resolutionComboBox;
 	
 	public SettingsOverlay(LayeredPanel parent){
 		
 		super();	
-		this.parent = parent;
+//		this.parent = parent;
 		
 		int width = (int)(parent.getWidth() / 2);
 		int height = (int)(parent.getHeight() / 2);
@@ -39,9 +43,9 @@ public class SettingsOverlay extends JPanel{
 		overlay_color = new Color(22,22,22,80);
 		setBackground(overlay_color);
 		
-		resolutionComboBox = new JComboBox();
-		resolutionComboBox.addItem("FullScreen");
-		resolutionComboBox.addItem("Standard Size");
+		resolutionComboBox = new JComboBox<String>();
+//		resolutionComboBox.addItem("FullScreen");
+//		resolutionComboBox.addItem("Standard Size");
 		resolutionComboBox.setBounds(0,0,100,200);
 		add(resolutionComboBox);
 		

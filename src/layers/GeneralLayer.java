@@ -4,21 +4,27 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
 import javax.swing.*;
+
 import core.LayeredPanel;
 
 public class GeneralLayer extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int WIDTH = 620;
 	public static final int HEIGHT = 400;
 	public static final int SCALE = 2;
 	private Color bg_overlay;
-	private Color loginFontColor;
+//	private Color loginFontColor;
 	private Font loginFont;
 	private Font h1;
 	private Font h2;
 	private Font inputText;
-	private Color h1_color;
+//	private Color h1_color;
 	private Color h2_color;
 
 	
@@ -52,7 +58,7 @@ public class GeneralLayer extends JPanel {
 		h1 			= new Font ("Arial",Font.BOLD,h1_px);
 		h2 			= new Font ("Arial",Font.BOLD, (int)(16*scale));
 
-		h1_color	= new Color(208,177,131);
+//		h1_color	= new Color(208,177,131);
 		h2_color 	= new Color(255,255,255);
 		inputText	= new Font("Arial", Font.PLAIN,(int)(35*scale));
 		
@@ -71,7 +77,7 @@ public class GeneralLayer extends JPanel {
         
         int li = (int)(80*scale);
         int leftMargin = (int)(108*scale);
-        int inputBoxHeight = (int)(50*scale);
+//        int inputBoxHeight = (int)(50*scale);
         
         if(menu == 0){
         	
@@ -151,7 +157,7 @@ public class GeneralLayer extends JPanel {
 	}
 	public void checkInput(){
 		boolean errors = false;
-		ArrayList<String> errorCodes = new ArrayList();
+		ArrayList<String> errorCodes = new ArrayList<String>();
 		
 		if(!(userText.getText().matches("^[a-z0-9_-]{3,15}$"))){
 			errorCodes.add("Username invalid");

@@ -1,18 +1,11 @@
 package appstate;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import javax.imageio.ImageIO;
-
 import serializable.CreateSettingsFile;
 import serializable.ReadSettingsFile;
 import layers.GeneralGraphicsLayer;
@@ -23,14 +16,14 @@ public class SettingsState extends AppState{
 	private AppStateManager asm;
 	private GeneralGraphicsLayer parent;
 	
-	private int screenW;
-	private int screenH;
+//	private int screenW;
+//	private int screenH;
 	
 	private BufferedImage bgImage;
 	
 	// Selectors
 	private int currentChoice;
-	private int subChoice;
+//	private int subChoice;
 	
 	private int optionX;
 	private int optionY;
@@ -53,8 +46,8 @@ public class SettingsState extends AppState{
 		this.parent = parent;
 		
 		// Setup screen specifications
-		screenW = parent.screenHeight;
-		screenH = parent.screenWidth;
+//		screenW = parent.screenHeight;
+//		screenH = parent.screenWidth;
 		
 		currentChoice = 0;
 		
@@ -109,7 +102,7 @@ public class SettingsState extends AppState{
 		drawingBoard.drawRect(0,0,GeneralGraphicsLayer.WIDTH, GeneralGraphicsLayer.HEIGHT);
 		drawingBoard.setColor(Color.WHITE);
 		
-		Color selectedColor = new Color(119,193,197);
+//		Color selectedColor = new Color(119,193,197);
 		
 		int iter = 0;
 		for(String key: hm.keySet()){

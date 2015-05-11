@@ -2,12 +2,12 @@ package overlays;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 import entity.Player;
 
 public class DebugOverlay {
-	private ArrayList<DebugItem> debugItems;
+//	private ArrayList<DebugItem> debugItems;
 	DebugItem position;
 	DebugItem size;
 	DebugItem action;
@@ -15,7 +15,7 @@ public class DebugOverlay {
 	private Player player;
 
 	public DebugOverlay(){
-		debugItems = new ArrayList<DebugItem>();
+//		debugItems = new ArrayList<DebugItem>();
 		position = new DebugItem("position");
 		position.addParamater("x");
 		position.addParamater("y");

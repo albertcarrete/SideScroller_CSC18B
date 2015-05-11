@@ -4,9 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
-
 import layers.GeneralGraphicsLayer;
 
 public class LobbyState extends AppState{
@@ -28,7 +25,7 @@ public class LobbyState extends AppState{
 		try{
 			titleColor = new Color(128,0,0);
 			titleFont = new Font("Century Gothic",Font.PLAIN, 40);
-			bg = ImageIO.read(getClass().getResourceAsStream("/msbg.gif"));
+//			bg = ImageIO.read(getClass().getResourceAsStream("/msbg.gif"));
 		}
 		catch(Exception e){
 			e.printStackTrace();

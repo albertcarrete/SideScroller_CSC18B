@@ -16,10 +16,10 @@ public class TileMap {
 	private double y;
 	
 	/*bounds*/
-	private int ymin;
-	private int ymax;
-	private int xmin;
-	private int xmax;
+//	private int ymin;
+//	private int ymax;
+//	private int xmin;
+//	private int xmax;
 	
 	private double tween;
 
@@ -94,11 +94,11 @@ public class TileMap {
 			
 			
 			// set bounds
-			xmin = LayeredPanel.WIDTH - width;
-			xmax = 0;
-			ymin = LayeredPanel.HEIGHT - height;
-			ymax = 0;
-			
+//			xmin = LayeredPanel.WIDTH - width;
+//			xmax = 0;
+//			ymin = LayeredPanel.HEIGHT - height;
+//			ymax = 0;
+//			
 			String delims = "\\s+";
 			
 			// Loop through MAP data

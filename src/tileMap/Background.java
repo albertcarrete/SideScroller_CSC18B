@@ -8,12 +8,12 @@ import layers.GeneralGraphicsLayer;
 public class Background {
 	
 	private BufferedImage image;
-	private double moveScale;
+//	private double moveScale;
 	
 	public Background(String s, double ms){
 		try{
 			image = ImageIO.read(getClass().getResourceAsStream(s));
-			moveScale = ms;
+//			moveScale = ms;
 		}catch(Exception e){
 			e.printStackTrace();
 		}

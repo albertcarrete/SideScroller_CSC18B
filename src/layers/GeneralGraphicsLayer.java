@@ -4,15 +4,15 @@ import handlers.VEIN;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+//import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
-import javax.imageio.ImageIO;
+//import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import core.LayeredPanel;
-import socket.SMSocket;
+//import socket.SMSocket;
 import appstate.AppStateManager;
 
 
@@ -27,6 +27,10 @@ import appstate.AppStateManager;
  * */
 public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	VEIN _v;
 	public static final int WIDTH = 600;  // 320
 	public static final int HEIGHT = 330; // 240
@@ -36,19 +40,19 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	public int screenHeight;
 	public int screenWidthConstraint;
 	
-	private Color titleColor;
-	private Font titleFont;
-	private Graphics2D g;
+//	private Color titleColor;
+//	private Font titleFont;
+//	private Graphics2D g;
 	private BufferedImage drawing;
-	private BufferedImage image;
-	private BufferedImage image2;
+//	private BufferedImage image;
+//	private BufferedImage image2;
 	private Thread thread;
 	private AppStateManager asm;
 	private boolean running;
 	
 	private int FPS = 60;
 	private long targetTime = 1000 / FPS;
-	private SMSocket socket;
+//	private SMSocket socket;
 
 	public String username;
 	LayeredPanel root;
@@ -69,8 +73,8 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 		float scaledWidth = (float)WIDTH * scaled;
 		screenWidthConstraint = (int)scaledWidth;
 		
-		float getMargins = (screenWidth - screenWidthConstraint) / 2;
-		int marginsNormalized = (int)getMargins;
+//		float getMargins = (screenWidth - screenWidthConstraint) / 2;
+//		int marginsNormalized = (int)getMargins;
 		
 		setPreferredSize(new Dimension(root.getWidth(), root.getHeight()));
 		setFocusable(false);
