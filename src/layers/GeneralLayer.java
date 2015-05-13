@@ -3,9 +3,20 @@ package layers;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+import org.json.JSONObject;
+
+import com.sun.net.ssl.HttpsURLConnection;
 
 import core.LayeredPanel;
 
@@ -35,7 +46,8 @@ public class GeneralLayer extends JPanel {
 	
 	private LayeredPanel layer;
 	public int menu = 0;
-	
+	private final String USER_AGENT = "Mozilla/5.0";
+
 	public GeneralLayer(Point origin,LayeredPanel layer){
 		
 		super();	
@@ -157,6 +169,7 @@ public class GeneralLayer extends JPanel {
 	}
 	public void checkInput(){
 		boolean errors = false;
+		boolean success = false;
 		ArrayList<String> errorCodes = new ArrayList<String>();
 		
 		if(!(userText.getText().matches("^[a-z0-9_-]{3,15}$"))){
@@ -180,7 +193,106 @@ public class GeneralLayer extends JPanel {
 		}else{
 			textArea.setText("");
 			textArea.setText("Validation successful! Sending information...");
-			layer.removeLoginLayer();
+	//			layer.removeLoginLayer();
+			try{
+				success = sendPost(userText.getText(),b);				
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			if(success){
+				layer.removeLoginLayer();
+			}else{
+				errorCodes.add("User not found");
+			}
 		}
+	}
+	private void sendGet() throws Exception{
+		
+		System.out.println("Is this even called?");
+		
+		String url = "http://localhost:8080/api/testers/554abf64794096d429f81d30";
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		
+		// optional default is GET
+		con.setRequestMethod("GET");
+		
+		// add request header
+		con.setRequestProperty("User-Agent",USER_AGENT);
+		
+		int responseCode = con.getResponseCode();
+		System.out.println("\nSending 'GET' request to URL : " + url);
+		System.out.println("Response Code : " + responseCode);
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+		
+		while((inputLine = in.readLine()) != null){
+			response.append(inputLine);
+		}
+		in.close();
+		
+		JSONObject responseObject = new JSONObject(response.toString());
+  		String username = (String)responseObject.get("username");  
+  		String id = (String)responseObject.get("_id");  
+
+  		System.out.println(username);
+  		System.out.println(id);
+		//print result
+		System.out.println(response.toString());
+//		layer.removeLoginLayer();
+
+		
+	}
+	private boolean sendPost(String username, String password) throws Exception{
+//		try{
+		
+			Boolean success = false;
+			URL url = new URL("http://localhost:8080/api/authenticate");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type","application/json");
+			
+			JSONObject json = new JSONObject();
+		    json.put("username", username);
+		    json.put("password", password);
+		      	
+		    System.out.println(json.toString());
+			String input = json.toString();
+			
+			OutputStream os = conn.getOutputStream();
+			os.write(input.getBytes());
+			os.flush();
+			
+			if(conn.getResponseCode() != HttpURLConnection.HTTP_OK){
+				throw new RuntimeException("Failed: HTTP error code : " + conn.getResponseCode());
+			}
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String output;
+			System.out.println("Output from Server ... \n");
+			StringBuffer response = new StringBuffer();
+
+			while((output = br.readLine()) != null){
+				System.out.println(output);
+				response.append(output);
+			}
+			conn.disconnect();
+			
+			JSONObject responseObject = new JSONObject(response.toString());
+	  		success = (Boolean)responseObject.get("success");
+	  		System.out.println(success);
+	  		
+	  		return success;
+//	}catch (MalformedURLException e){
+//		e.printStackTrace();
+//	}catch(IOException e){
+//		e.printStackTrace();
+//	}
+			
+			
 	}
 }

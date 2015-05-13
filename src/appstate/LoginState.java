@@ -27,7 +27,7 @@ public class LoginState extends AppState{
 		this.layer = layer;
 		overlayTriggered = false;
 		try{
-			loginBoxImage = ImageIO.read(getClass().getResourceAsStream("/login_box.gif"));		
+//			loginBoxImage = ImageIO.read(getClass().getResourceAsStream("/login_box.gif"));		
 			bgImage = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/login_bg.jpg"));			
 		}
 		catch(Exception e){
@@ -53,7 +53,7 @@ public class LoginState extends AppState{
 		/* Background image */
         drawingBoard.drawImage(bgImage, 0,0,GeneralGraphicsLayer.WIDTH, GeneralGraphicsLayer.HEIGHT,null);
 		/* Title image */
-        drawingBoard.drawImage(loginBoxImage,160,60,201,201,null);
+//        drawingBoard.drawImage(loginBoxImage,160,60,201,201,null);
         drawingBoard.setColor(Color.WHITE);
         if(layer == null){
         	drawingBoard.drawString("Gathering information...",180,120);
