@@ -27,6 +27,8 @@ public class GameState extends AppState{
 	private SMSocket socket;
 	public String username;
 	private ArrayList<NetPlayer> networkedPlayers;
+	
+	private String name;
 
 	public GameState(AppStateManager asm, GeneralGraphicsLayer layer){
 				
@@ -49,11 +51,13 @@ public class GameState extends AppState{
 		/* Create a temporary identifier for this player */
 		Random rnd = new Random(System.currentTimeMillis());
 		int number = rnd.nextInt(900) + 100;
-		String name = "anonymous" + Integer.toString(number);
+		name = "anonymous" + Integer.toString(number);
+		/* Position current player's pawn */
+		debugger = new Debugger();
 		
 		/*Attempt to connect to socket*/
 		try{
-			socket = new SMSocket();
+			socket = new SMSocket(debugger,name);
 			socket.setGame(this);
 	    	SocketController socketController = new SocketController(socket, this);
 			socketController.linkUp();
@@ -62,8 +66,7 @@ public class GameState extends AppState{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		/* Position current player's pawn */
-		debugger = new Debugger();
+
 
 		player = new Player(tileMap,socket,name,debugger);
 		player.setPosition(100, 100);
@@ -117,9 +120,10 @@ public class GameState extends AppState{
 		boolean matchFound = false;
 		for(NetPlayer netPlayer:networkedPlayers){
 			
-//			System.out.println("Comparing " + netPlayer.getUsername() + " with " + temp + ".");
+			System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.name + ".");
 			
-			if(netPlayer.getUsername().equals(temp)){
+			if(netPlayer.getUsername().equals(temp) && netPlayer.getUsername() != this.name){
+				System.out.println("Updating " + netPlayer.getUsername() + " coordinates");
 //				System.out.println("Player found and updating!");
 				netPlayer.setPosition(x,y);
 				matchFound = true;
