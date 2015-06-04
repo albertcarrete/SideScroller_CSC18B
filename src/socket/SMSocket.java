@@ -41,12 +41,12 @@ public class SMSocket {
 	
 	public SMSocket(Debugger d, String controllerName) throws URISyntaxException{
 		// Socket connection
-		socket = IO.socket("http://localhost:8080");
+//		socket = IO.socket("http://localhost:8080");
 		this.debugger = d;
 		this.controllerName = controllerName;
 		clockSockets = false;
 		secondCounter = 0;
-//		socket = IO.socket("http://52.24.205.124/");
+		socket = IO.socket("http://52.24.205.124/");
 //		socket = IO.socket("https://msgameserver.herokuapp.com/");
 		// When the socket connects
 		socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {

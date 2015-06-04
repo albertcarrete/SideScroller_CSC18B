@@ -16,7 +16,10 @@ public class AppStateManager {
 	public static final int LOBBYSTATE = 2;
 	public static final int SETTINGSSTATE = 3;
 	public static final int GAMESTATE = 4;
-
+	public static final int CHARACTERSELECT = 5;
+	
+	public int gameID;
+	
 	
 	public AppStateManager(GeneralGraphicsLayer appPanel){
 		
@@ -28,7 +31,8 @@ public class AppStateManager {
 		appStates.add(new LobbyState(this,this.appPanel));
 		appStates.add(new SettingsState(this,this.appPanel));
 		appStates.add(new GameState(this,this.appPanel));
-
+		appStates.add(new CharacterSelectState(this,this.appPanel));
+		gameID = 0;
 	}
 	public void setState(int state){
 		currentState = state;

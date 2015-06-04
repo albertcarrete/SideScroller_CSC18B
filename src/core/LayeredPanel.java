@@ -44,8 +44,10 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	GeneralLayer loginLayer;
 	RegisterLayer registerLayer; 
 	SettingsOverlay settingsOverlay;
+	LobbyLayer lobbyLayer;
 	
 	boolean loginOpen = false;
+	boolean lobbyOpen = false;
 	boolean overlay = false;
 	Point origin;
 	private int suboption[];
@@ -71,7 +73,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 		setWidth(settingsRes.getWidth());
 			
 		
-        setBorder(BorderFactory.createLineBorder(Color.RED));
+//        setBorder(BorderFactory.createLineBorder(Color.RED));
 
 		/* Root Panel Setting */
 //        setLayout(null);
@@ -117,6 +119,24 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 		init();
 	}
 	
+	public void buildLobbyLayer(){
+		if(!lobbyOpen){
+			System.out.println("Building lobby layer");
+			lobbyLayer = new LobbyLayer(this);
+			JLP.add(lobbyLayer,new Integer(1));
+			repaint();
+			lobbyOpen = true;
+		}else{
+			removeLobbyLayer();
+		}
+	}
+	
+	public void removeLobbyLayer(){
+		JLP.remove(lobbyLayer);
+		repaint();
+		lobbyOpen = false;
+		gLayer.fireCharacterSelect();
+	}
 	public void buildLoginLayer(){
         Point origin = new Point(600, 350);
         

@@ -21,18 +21,25 @@ public class LoginState extends AppState{
 	
 	private boolean overlayTriggered;
 	
+	/* GeneralGraphicsLayer -> LoginState */
 	public LoginState(AppStateManager asm, GeneralGraphicsLayer layer){
-		System.out.println("Login state instantiated!");
-		this.asm = asm;
-		this.layer = layer;
+		System.out.println("[LoginState] instantiated!");
+		
+		/* Set hierarchy*/
+		this.asm 	= asm;
+		this.layer 	= layer;
+		
+		/* Options */
 		overlayTriggered = false;
-		try{
-//			loginBoxImage = ImageIO.read(getClass().getResourceAsStream("/login_box.gif"));		
+		
+		/* Background Image */
+		try{	
 			bgImage = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/login_bg.jpg"));			
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		
 		init();
 	}
 	
@@ -41,6 +48,7 @@ public class LoginState extends AppState{
 		
 	}
 	public void update(){
+		
 		if(layer != null && overlayTriggered != true){
 			layer.triggerLoginOverlay();
 			overlayTriggered = true;

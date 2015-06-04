@@ -9,13 +9,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-
 import javax.swing.*;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.json.JSONObject;
-
 import core.LayeredPanel;
 
 public class GeneralLayer extends JPanel {
@@ -52,8 +48,6 @@ public class GeneralLayer extends JPanel {
 		this.layer = layer;
 		
 		JPanel panel = new JPanel(new MigLayout());
-		
-
 		
 		int calculatedWidth 	= (int)(layer.getWidth() / 2);
 		int calculatedHeight 	= (int)(layer.getHeight() / 2);

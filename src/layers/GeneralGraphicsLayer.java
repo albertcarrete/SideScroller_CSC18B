@@ -53,7 +53,8 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	private int FPS = 60;
 	private long targetTime = 1000 / FPS;
 //	private SMSocket socket;
-
+	
+	public boolean characterSelect = false;
 	public String username;
 	LayeredPanel root;
 	
@@ -78,7 +79,7 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 		
 		setPreferredSize(new Dimension(root.getWidth(), root.getHeight()));
 		setFocusable(false);
-        setBorder(BorderFactory.createLineBorder(Color.BLUE));
+//        setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
 		setBounds(0, 0, root.getWidth(), root.getHeight());
 		asm = new AppStateManager(this);
@@ -189,6 +190,12 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	}
 	public void triggerSettingsOverlay(){
 		root.buildSettingsLayer();
+	}
+	public void triggerLobbyOverlay(){
+		root.buildLobbyLayer();
+	}
+	public void fireCharacterSelect(){
+		asm.setState(AppStateManager.CHARACTERSELECT);
 	}
 	public void grantAccess(){
         asm.setState(1);
