@@ -14,16 +14,15 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import core.LayeredPanel;
+import core.Passport;
 import net.miginfocom.swing.MigLayout;
 import models.LobbyModel;
 
 public class LobbyLayer extends JPanel{
 	
-	private LayeredPanel layer;
+	private LayeredPanel parent;
+	public Passport _p;
 	JTextArea output;
 	JList list;
 	JTable table;
@@ -45,17 +44,18 @@ public class LobbyLayer extends JPanel{
 	final static String LOBBYCREATE = "LOBBYCREATE";
 
 	
-	public LobbyLayer(LayeredPanel l){
+	public LobbyLayer(LayeredPanel l, Passport p){
 		
 		super();
-		this.layer = l;
+		this.parent = l;
+		this._p = p;
 		main = new JPanel();
 		
-		int calculatedWidth 	= (int)(layer.getWidth() * .80);
-		int calculatedHeight 	= (int)(layer.getHeight() * .80);
+		int calculatedWidth 	= (int)(parent.getWidth() * .80);
+		int calculatedHeight 	= (int)(parent.getHeight() * .80);
 		
-		int calculatedWMargin = (int)((layer.getWidth() - calculatedWidth)/2);
-		int calculatedHMargin = (int)((layer.getHeight() - calculatedHeight)/2);
+		int calculatedWMargin = (int)((parent.getWidth() - calculatedWidth)/2);
+		int calculatedHMargin = (int)((parent.getHeight() - calculatedHeight)/2);
 		
 		setPreferredSize(new Dimension(calculatedWidth,calculatedHeight));
 		setOpaque(true);
@@ -63,12 +63,12 @@ public class LobbyLayer extends JPanel{
 		
 		JPanel card1 = new JPanel();
 	    card1.setLayout(new BorderLayout());
-	    LobbyViewState LobbyViewState = new LobbyViewState(this);
+	    LobbyViewState LobbyViewState = new LobbyViewState(this,this._p);
 	    card1.add(LobbyViewState);
 	    
 		JPanel card2 = new JPanel();
 	    card2.setLayout(new BorderLayout());
-	    LobbyCreateState LobbyCreateState = new LobbyCreateState(this);
+	    LobbyCreateState LobbyCreateState = new LobbyCreateState(this,this._p);
 	    card2.add(LobbyCreateState);
 		
 	    cards = new JPanel(new CardLayout());
@@ -88,61 +88,20 @@ public class LobbyLayer extends JPanel{
 		System.out.println("Attempting to change view to " + view);
 		cl.show(cards,view);
 	}
-	private void sendGet() throws Exception{
-		
-		String url = "http://localhost:8080/api/lobbies";
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		
-		// optional default is GET
-		con.setRequestMethod("GET");
-		// add request header
-		con.setRequestProperty("User-Agent",USER_AGENT);
-		
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-		
-		while((inputLine = in.readLine()) != null){
-			response.append(inputLine);
-		}
-		in.close();
-		
-		
-		System.out.println(response.toString());
 
-		JSONArray json = new JSONArray(response.toString());
-		
-		int length = json.length();
-		results = new String[length][3];
-		
-		
-		for(int i = 0; i < json.length(); i++){
-			
-			JSONObject jObj = json.getJSONObject(i);
-			String title = jObj.getString("title");
-			String numPlayers = jObj.getString("numPlayers");
-			String map = jObj.getString("map");
-			
-			results[i][0] = title;
-			results[i][1] = numPlayers;
-			results[i][2] = map;
-			
-			System.out.println("title: " + title + " numPlayers: " + numPlayers + "map: " + map);
-		}
-        lobbyModel = new LobbyModel(results);
-        table.setModel(lobbyModel);
-        table.repaint();
-	}
 	
 	/* Manages the visibility of the overlay */
 	public void toggleLobbyOverlay(){
-		layer.removeLobbyLayer();
+		parent.removeLobbyLayer();
 	}
-
+	public void setCurrentGameId(String id){
+		parent.currentGame = id;
+	}
+	/* Fetches the logged in players ID from the root class
+	 * LobbyLayer -> LayeredPanel.playerID
+	 * */
+	public String getGlobalUsername(){
+		return parent.playerID;
+	}
 
 }

@@ -3,6 +3,7 @@ package appstate;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+import core.Passport;
 import layers.GeneralGraphicsLayer;
 
 public class AppStateManager {
@@ -19,19 +20,20 @@ public class AppStateManager {
 	public static final int CHARACTERSELECT = 5;
 	
 	public int gameID;
+	public Passport _p;
 	
-	
-	public AppStateManager(GeneralGraphicsLayer appPanel){
+	public AppStateManager(GeneralGraphicsLayer appPanel, Passport p){
 		
 		appStates = new ArrayList<AppState>();
 		currentState = LOGINSTATE;
 		this.appPanel = appPanel;
+		this._p = p;
 		appStates.add(new LoginState(this,this.appPanel));
-		appStates.add(new MainMenuState(this,this.appPanel));
+		appStates.add(new MainMenuState(this,this.appPanel,_p));
 		appStates.add(new LobbyState(this,this.appPanel));
 		appStates.add(new SettingsState(this,this.appPanel));
-		appStates.add(new GameState(this,this.appPanel));
-		appStates.add(new CharacterSelectState(this,this.appPanel));
+		appStates.add(new GameState(this,this.appPanel,_p));
+		appStates.add(new CharacterSelectState(this,this.appPanel,_p));
 		gameID = 0;
 	}
 	public void setState(int state){

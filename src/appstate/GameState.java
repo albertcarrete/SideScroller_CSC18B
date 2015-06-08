@@ -4,6 +4,8 @@ package appstate;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
+
+import core.Passport;
 import overlays.Debugger;
 import socket.SocketController;
 import entity.NetPlayer;
@@ -30,17 +32,24 @@ public class GameState extends AppState{
 	
 	private String name;
 
-	public GameState(AppStateManager asm, GeneralGraphicsLayer layer){
+	Passport _p;
+	
+	public GameState(AppStateManager asm, GeneralGraphicsLayer layer, Passport passport){
 				
 		this.asm = asm;
 //		this.layer = layer;
 		this.username = layer.username;
+		this._p = passport;
 //		debugOverlay = new DebugOverlay();
 		networkedPlayers = new ArrayList<NetPlayer>();
 
 	}
 	/* Init runs when this application state is set */
 	public void init(){
+		
+		username = _p.getUsername();
+		
+		
 		/* Build Map */
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/customtileset.gif");
@@ -49,26 +58,27 @@ public class GameState extends AppState{
 		bg = new Background("/Backgrounds/custombg.jpg", 0.1);
 
 		/* Create a temporary identifier for this player */
-		Random rnd = new Random(System.currentTimeMillis());
-		int number = rnd.nextInt(900) + 100;
-		name = "anonymous" + Integer.toString(number);
+//		Random rnd = new Random(System.currentTimeMillis());
+//		int number = rnd.nextInt(900) + 100;
+//		name = "anonymous" + Integer.toString(number);
+		
 		/* Position current player's pawn */
 		debugger = new Debugger();
 		
 		/*Attempt to connect to socket*/
 		try{
-			socket = new SMSocket(debugger,name);
+			socket = new SMSocket(debugger,username,_p);
 			socket.setGame(this);
 	    	SocketController socketController = new SocketController(socket, this);
 			socketController.linkUp();
-			socket.userJoin(name);
+			socket.userJoin(username);
 
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 
 
-		player = new Player(tileMap,socket,name,debugger);
+		player = new Player(tileMap,socket,username,debugger);
 		player.setPosition(100, 100);
 	};
 	
@@ -102,7 +112,6 @@ public class GameState extends AppState{
 				netPlayer.draw(g);
 			}
 		}
-		
 	};
 	
 	public void addNetworkedPlayer(String username){

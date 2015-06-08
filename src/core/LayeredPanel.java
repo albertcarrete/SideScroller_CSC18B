@@ -25,6 +25,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	VEIN _v;
+	Passport _p;
 	JFrame parent;
 
 	public static final int WIDTH = 600; 	// 600 // 512  // 480
@@ -40,6 +41,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	
 	private int screenW;
 	private int screenH;
+	
 	GeneralGraphicsLayer gLayer;
 	GeneralLayer loginLayer;
 	RegisterLayer registerLayer; 
@@ -51,13 +53,18 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	boolean overlay = false;
 	Point origin;
 	private int suboption[];
-
+	
+	// Player Settings
+	public String currentGame;
+	public String playerID;
 	public LayeredPanel(JFrame parent){
 		
 		super();
 //		setDoubleBuffered(true);
 		_v = new VEIN();
 		_v.extendReach(this);
+		_p = new Passport();
+		
 		this.parent = parent;
 		
 		/*Determine screen size*/
@@ -72,7 +79,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 		setHeight(settingsRes.getHeight());
 		setWidth(settingsRes.getWidth());
 			
-		
+
 //        setBorder(BorderFactory.createLineBorder(Color.RED));
 
 		/* Root Panel Setting */
@@ -107,7 +114,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	private void init(){
 						
 		/* Graphics Window Layer */
-		gLayer = new GeneralGraphicsLayer(this,_v);
+		gLayer = new GeneralGraphicsLayer(this,_v,_p);
 		JLP.add(gLayer, new Integer(0));
 		
 //		GeneralLayer layer2 = new GeneralLayer(origin);
@@ -122,7 +129,7 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	public void buildLobbyLayer(){
 		if(!lobbyOpen){
 			System.out.println("Building lobby layer");
-			lobbyLayer = new LobbyLayer(this);
+			lobbyLayer = new LobbyLayer(this,this._p);
 			JLP.add(lobbyLayer,new Integer(1));
 			repaint();
 			lobbyOpen = true;
@@ -137,12 +144,20 @@ public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 		lobbyOpen = false;
 		gLayer.fireCharacterSelect();
 	}
+	public void removeLobbyLayer(String id){
+		currentGame = id;
+		JLP.remove(lobbyLayer);
+		repaint();
+		lobbyOpen = false;
+		// shifts the asm state to character select
+		gLayer.fireCharacterSelect();
+	}
 	public void buildLoginLayer(){
         Point origin = new Point(600, 350);
         
         if(!loginOpen){
 			System.out.println("Attempting to build login layer");
-			loginLayer = new GeneralLayer(origin,this);
+			loginLayer = new GeneralLayer(origin,this,_p);
 			JLP.add(loginLayer, new Integer(1));
 			repaint();
 			loginOpen = true;

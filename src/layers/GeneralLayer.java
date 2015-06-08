@@ -9,10 +9,20 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
+
 import javax.swing.*;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.json.JSONObject;
+//import org.json.simple.*;
+//import org.json.simple.parser.JSONParser;
+
+
+
 import core.LayeredPanel;
+import core.Passport;
 
 public class GeneralLayer extends JPanel {
 	
@@ -32,20 +42,22 @@ public class GeneralLayer extends JPanel {
 //	private Color h1_color;
 	private Color h2_color;
 
-	
+	// Include Passport
+	Passport _p;
 	// Text Fields
 	JTextField userText;
 	JTextArea textArea;
 	JPasswordField passwordText;
 	
-	private LayeredPanel layer;
+	final private LayeredPanel layer;
 	public int menu = 0;
 	private final String USER_AGENT = "Mozilla/5.0";
 
-	public GeneralLayer(Point origin,LayeredPanel layer){
+	public GeneralLayer(Point origin, LayeredPanel l, Passport p){
 		
 		super();	
-		this.layer = layer;
+		this.layer = l;
+		this._p = p;
 		
 		JPanel panel = new JPanel(new MigLayout());
 		
@@ -138,6 +150,15 @@ public class GeneralLayer extends JPanel {
     		registerButton.addActionListener(new ActionListener(){
     			public void actionPerformed(ActionEvent event){
 //    				showRegister();
+    				
+    				/* Create a random identifier for this player */
+    				Random rnd = new Random(System.currentTimeMillis());
+    				int number = rnd.nextInt(900) + 100;
+    				String uname = "anonymous" + Integer.toString(number);
+    				layer.playerID = uname;
+    				
+    				_p.setUsername(uname);
+    				
     				bypass();
     			}
     		});	
@@ -277,6 +298,16 @@ public class GeneralLayer extends JPanel {
 		}
 		in.close();
 		
+		// JSON SIMPLE
+//		JSONParser parser = new JSONParser();
+//		Object objRes =parser.parse(response.toString());
+//		JSONArray array=(JSONArray)objRes;
+//		JSONObject obj2=(JSONObject)array.get(1);
+//		
+//  		String username = (String)obj2.get("username");  
+//  		String id = (String)obj2.get("_id");  
+		
+  		// ORG.JSON
 		JSONObject responseObject = new JSONObject(response.toString());
   		String username = (String)responseObject.get("username");  
   		String id = (String)responseObject.get("_id");  
@@ -325,17 +356,19 @@ public class GeneralLayer extends JPanel {
 			}
 			conn.disconnect();
 			
-			JSONObject responseObject = new JSONObject(response.toString());
-	  		success = (Boolean)responseObject.get("success");
-	  		System.out.println(success);
-	  		
-	  		return success;
-//	}catch (MalformedURLException e){
-//		e.printStackTrace();
-//	}catch(IOException e){
-//		e.printStackTrace();
-//	}
+			// ORG.JSON
+			JSONObject resObject = new JSONObject(response.toString());
+			String resMessage = (String)resObject.get("message"); // change this to boolean?
+			System.out.println(resMessage);
 			
+			// JSON SIMPLE
+//			JSONParser parser = new JSONParser();
+//			Object objRes =parser.parse(response.toString());
+//			JSONArray array=(JSONArray)objRes;
+//			JSONObject obj2=(JSONObject)array.get(1);
 			
+
+	  		success = true;
+	  		return success;		
 	}
 }

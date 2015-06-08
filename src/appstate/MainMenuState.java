@@ -3,7 +3,10 @@ package appstate;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+
 import javax.imageio.ImageIO;
+
+import core.Passport;
 import layers.GeneralGraphicsLayer;
 
 public class MainMenuState extends AppState{
@@ -11,6 +14,7 @@ public class MainMenuState extends AppState{
 //	private Background bg;
 	private AppStateManager asm;
 	private GeneralGraphicsLayer layer;
+	private Passport _p;
 //	private int titleY;
 //	private int titleX;
 //	
@@ -34,10 +38,12 @@ public class MainMenuState extends AppState{
 	private BufferedImage bgImage;
 
 	// Constructor
-	public MainMenuState(AppStateManager asm, GeneralGraphicsLayer layer){
+	public MainMenuState(AppStateManager asm, GeneralGraphicsLayer layer, Passport passport){
 		System.out.println("Menu state instantiated!");
 		this.asm = asm;
 		this.layer = layer;
+		_p = passport;
+		
 		try{
 			titleImage = ImageIO.read(getClass().getResourceAsStream("/title.gif"));		
 			bgImage = ImageIO.read(getClass().getResourceAsStream("/titlebg.gif"));			
@@ -46,18 +52,18 @@ public class MainMenuState extends AppState{
 			e.printStackTrace();
 		}
 
-//		titleY = 0;
-//		titleX = 0;
 		currentChoice = 0;
 	}
-	// Initializer
+	/* *
+	 * 
+	 * init() runs on state change
+	 * 
+	 * */
 	public void init(){
-//		titleY = 0;
-//		titleX = 0;
+
 		currentChoice = 0;
 	};
 	public void update(){
-//		titleY++;
 
 	};
 	
@@ -160,6 +166,13 @@ public class MainMenuState extends AppState{
 	}
 	
 	public void keyPressed(int k){
+		
+		if(k==KeyEvent.VK_P){
+			_p.setGameId("test");
+			asm.setState(AppStateManager.GAMESTATE);
+		}
+		
+		
 		if(k==KeyEvent.VK_ENTER){
 			select();
 		}

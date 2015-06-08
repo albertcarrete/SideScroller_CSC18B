@@ -7,11 +7,13 @@ import java.awt.event.KeyEvent;
 //import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
+
 //import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import core.LayeredPanel;
+import core.Passport;
 //import socket.SMSocket;
 import appstate.AppStateManager;
 
@@ -57,13 +59,15 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	public boolean characterSelect = false;
 	public String username;
 	LayeredPanel root;
+	Passport _p;
 	
-	public GeneralGraphicsLayer(LayeredPanel root, VEIN v){	
+	public GeneralGraphicsLayer(LayeredPanel root, VEIN v, Passport p){	
 		super();
 		_v = v;
 		_v.extendReach(this);
         this.root = _v.getRootLayer();
-
+        _p = p;
+        
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		screenWidth 	= (int)(screenSize.getWidth());
 		screenHeight 	= (int)(screenSize.getHeight() - 50);
@@ -82,7 +86,7 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 //        setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
 		setBounds(0, 0, root.getWidth(), root.getHeight());
-		asm = new AppStateManager(this);
+		asm = new AppStateManager(this,_p);
         drawing = GraphicsEnvironment.getLocalGraphicsEnvironment()
         		.getDefaultScreenDevice().getDefaultConfiguration()
                 .createCompatibleImage(WIDTH, HEIGHT); // it will stretch if you don't multiply this by scale.
@@ -216,5 +220,11 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 		root.applySettings();
 		setBounds(0, 0, root.getWidth(), root.getHeight());
 //		repaint();
+	}
+	public String getCurrentGameID(){
+		return root.currentGame;
+	}
+	public String getCurrentPlayerID(){
+		return root.playerID;
 	}
 }

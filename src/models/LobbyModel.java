@@ -11,7 +11,8 @@ public class LobbyModel extends AbstractTableModel{
 	private String[] columnNames = {
 			"Title",
 			"Players",
-			"Map"
+			"Map",
+			"_ID"
 	};
 	public LobbyModel(String[][] tableData){
 		this.tableData = tableData;

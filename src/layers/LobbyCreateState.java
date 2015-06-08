@@ -10,12 +10,12 @@ import java.net.URL;
 
 import javax.swing.*;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import net.miginfocom.swing.MigLayout;
 import models.LobbyModel;
 import core.LayeredPanel;
+import core.Passport;
 
 public class LobbyCreateState extends JPanel{
 	
@@ -27,7 +27,7 @@ public class LobbyCreateState extends JPanel{
 	/* */
 	private LayeredPanel layer;
 	final private LobbyLayer parent;
-
+	public Passport _p;
 	JTextArea output;
 	JList list;
 	JTable table;
@@ -42,11 +42,12 @@ public class LobbyCreateState extends JPanel{
 	JTextField titleField;
 	JComboBox mapList;
 	
-	public LobbyCreateState(LobbyLayer p){
+	public LobbyCreateState(LobbyLayer p, Passport passport){
 		
 		super();
 		JPanel panel = new JPanel(new MigLayout());
 		this.parent = p;
+		_p = passport;
 	    String[][] tableData = {{"[title]","[numPlayers]","[map]"},
                 {"deux",   "dos",     "due"     },
                 {"trois",  "tres",    "tre"     },
@@ -80,13 +81,13 @@ public class LobbyCreateState extends JPanel{
 		add(panel);
 	
 		try{
-			sendGet();			
+//			sendGet();			
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 		
-		
+		/* Listens for button press on "Start Lobby" */
 		startLobbyButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
 				// hide the lobby UI overlay
@@ -123,56 +124,7 @@ public class LobbyCreateState extends JPanel{
 		layer.removeLobbyLayer();
 
 	}
-	private void sendGet() throws Exception{
-		
-		String url = "http://localhost:8080/api/lobbies";
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		
-		// optional default is GET
-		con.setRequestMethod("GET");
-		// add request header
-		con.setRequestProperty("User-Agent",USER_AGENT);
-		
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-		
-		while((inputLine = in.readLine()) != null){
-			response.append(inputLine);
-		}
-		in.close();
-		
-		
-		System.out.println(response.toString());
-
-		JSONArray json = new JSONArray(response.toString());
-		
-		int length = json.length();
-		results = new String[length][3];
-		
-		
-		for(int i = 0; i < json.length(); i++){
-			
-			JSONObject jObj = json.getJSONObject(i);
-			String title = jObj.getString("title");
-			String numPlayers = jObj.getString("numPlayers");
-			String map = jObj.getString("map");
-			
-			results[i][0] = title;
-			results[i][1] = numPlayers;
-			results[i][2] = map;
-			
-			System.out.println("title: " + title + " numPlayers: " + numPlayers + "map: " + map);
-		}
-        lobbyModel = new LobbyModel(results);
-        table.setModel(lobbyModel);
-        table.repaint();
-	}	
+	
 	private boolean sendPost(String title, String map) throws Exception{
 //		try{
 		
@@ -186,9 +138,10 @@ public class LobbyCreateState extends JPanel{
 			JSONObject json = new JSONObject();
 		    json.put("title", title);
 		    json.put("map", map);
-		    json.put("numPlayers", 1);
+		    json.put("numPlayers", 0);
+		    json.put("maxPlayers", 4);
 		    json.put("state", "lobby");
-		    json.put("player", "default name");
+		    json.put("player", "");
 		    
 		    System.out.println(json.toString());
 			String input = json.toString();
@@ -212,21 +165,21 @@ public class LobbyCreateState extends JPanel{
 			}
 			conn.disconnect();
 			
-//			JSONObject responseObject = new JSONObject(response.toString());
-//	  		success = (Boolean)responseObject.get("success");
-//	  		System.out.println(success);
+			JSONObject responseObject = new JSONObject(response.toString());
+	  		String id = (String)responseObject.get("id");
+	  		
+	  		System.out.println("Successfully created room. [ID: " + id + "]");
+	  		parent.setCurrentGameId(id);
+	  		
+	  		// Set Passport
+	  		_p.setGameId(id);
+	  		_p.setPosition(0);
+	  		
 	  		success = true;
 	  		return success;
 	
 			
 	}
 	
-	private void refresh(){
-		try{
-			sendGet();			
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
+
 }
