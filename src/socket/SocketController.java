@@ -2,7 +2,6 @@ package socket;
 
 import appstate.CharacterSelectState;
 import appstate.GameState;
-//import layers.GeneralGraphicsLayer;
 
 
 public class SocketController {

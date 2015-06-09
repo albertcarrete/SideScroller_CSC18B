@@ -7,10 +7,12 @@ import com.github.nkzawa.socketio.client.Socket;
 
 import java.net.URISyntaxException;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 //import org.json.*;
 //import org.json.simple.*;
 //import org.json.simple.parser.JSONParser;
+
 
 
 import java.util.Iterator;
@@ -66,7 +68,9 @@ public class SMSocket {
 			
 			@Override
 			public void call(Object... args) {  
-				System.out.println("socket connected");
+				System.out.print("******************************* \n"
+								+" SMSocket successfully connected \n "
+								+"******************************* \n");
       	  	}
       	  
       	}).on("user:joined", new Emitter.Listener(){
@@ -242,9 +246,9 @@ public class SMSocket {
           		clockSockets = true;
           		
       		}
-      	}).on("user:replication", new Emitter.Listener(){
-      		
-      		
+      	})
+      	/* Receives user coordinates and then sends it to findAndUpdateNetPlayer */
+      	.on("user:replication", new Emitter.Listener(){
       		/* Update NetPlayer Location */
       		@Override
       		public void call(Object... args){
@@ -253,9 +257,31 @@ public class SMSocket {
       			
 //      			System.out.println("Coordinates received:");
       			try{
+	      			System.out.println(args[0]);
+	  				JSONObject responseObject = new JSONObject(args[0].toString());
+	  				Iterator<?> keys = responseObject.keys();
+					
+	  				while(keys.hasNext()){
+						String key = (String)keys.next();
+					    JSONObject subObj = (JSONObject)responseObject.get(key);
+					    
+					    	String username = (String)key;
+					    	double xpos = ((Number)subObj.get("xpos")).doubleValue();
+					    	double ypos = ((Number)subObj.get("ypos")).doubleValue();
+					    	
+					    System.out.println("{ " + (String)key + " ,x: " + ypos + ", y: " + xpos + " }");
+	//				    System.out.println("{ " + counter + " }");
+					    game.findAndUpdateNetPlayer((String)key, xpos, ypos);
+				}
+
+      				System.out.println(responseObject);
       				
-      				JSONObject responseObject = new JSONObject(args[0].toString());
-      				responseObject.keys();
+//      				responseObject.keys();
+      				
+//      				JSONObject responseObject = new JSONObject(args[0].toString());
+//      				
+//      				
+//      				responseObject.keys();
       				
       				
 //      				JSONParser parser = new JSONParser();
@@ -407,8 +433,16 @@ public class SMSocket {
 	      
 		socket.emit("coordinates", obj);
 	}
-	public void userJoin(String username){
-		socket.emit("user:join",username);
+	public void userJoin(String username, String gameId){
+		
+	      try{
+		    JSONObject obj = new JSONObject();
+	    	obj.put("username", username);
+	      	obj.put("gameId", gameId);
+			socket.emit("user:join",obj);
+	      }catch(Exception e){
+	      	e.printStackTrace();
+	      } 
 	}
 	public void requestPrivateRoom(JSONObject obj){
 		socket.emit("private:joinRoom", obj);

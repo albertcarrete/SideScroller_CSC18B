@@ -6,6 +6,7 @@ import java.io.*;
 
 import javax.imageio.ImageIO;
 
+import layers.GeneralGraphicsLayer;
 import core.LayeredPanel;
 
 
@@ -16,10 +17,10 @@ public class TileMap {
 	private double y;
 	
 	/*bounds*/
-//	private int ymin;
-//	private int ymax;
-//	private int xmin;
-//	private int xmax;
+	private int ymin;
+	private int ymax;
+	private int xmin;
+	private int xmax;
 	
 	private double tween;
 
@@ -46,9 +47,9 @@ public class TileMap {
 	public TileMap(int tileSize){
 		this.tileSize = tileSize;
 		// 600 / 30 = 20
-		numRowsToDraw = LayeredPanel.HEIGHT / tileSize; // + 2 ??
+		numRowsToDraw = GeneralGraphicsLayer.HEIGHT / tileSize; // + 2 ??
 		// 450 / 30 = 15
-		numColsToDraw = LayeredPanel.WIDTH / tileSize; // + 2 ??
+		numColsToDraw = GeneralGraphicsLayer.WIDTH / tileSize; // + 2 ??
 		
 //		System.out.println("Rows: " + numRowsToDraw);
 //		System.out.println("Cols: " + numColsToDraw);
@@ -94,10 +95,10 @@ public class TileMap {
 			
 			
 			// set bounds
-//			xmin = LayeredPanel.WIDTH - width;
-//			xmax = 0;
-//			ymin = LayeredPanel.HEIGHT - height;
-//			ymax = 0;
+			xmin = GeneralGraphicsLayer.WIDTH - width;
+			xmax = 0;
+			ymin = GeneralGraphicsLayer.HEIGHT - height;
+			ymax = 0;
 //			
 			String delims = "\\s+";
 			
@@ -140,10 +141,17 @@ public class TileMap {
 		
 		System.out.println(this.x + "\n==========");
 		
+		fixBounds();
 		
 		colOffset = (int)-this.x / tileSize;
 		rowOffset = (int)-this.y / tileSize;
 		
+	}
+	private void fixBounds() {
+		if(x < xmin) x = xmin;
+		if(y < ymin) y = ymin;
+		if(x > xmax) x = xmax;
+		if(y > ymax) y = ymax;
 	}
 	
 	public void draw(Graphics2D g){

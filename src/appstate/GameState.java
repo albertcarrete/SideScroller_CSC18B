@@ -27,7 +27,10 @@ public class GameState extends AppState{
 	private Debugger debugger;
 	/*MULTIPLAYER*/
 	private SMSocket socket;
+	
+	// Passport
 	public String username;
+	private String gameId;
 	private ArrayList<NetPlayer> networkedPlayers;
 	
 	private String name;
@@ -47,14 +50,16 @@ public class GameState extends AppState{
 	/* Init runs when this application state is set */
 	public void init(){
 		
-		username = _p.getUsername();
-		
+		username 	= _p.getUsername();
+		gameId 		= _p.getGameId();
 		
 		/* Build Map */
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/customtileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
+		tileMap.setTween(1);
+
 		bg = new Background("/Backgrounds/custombg.jpg", 0.1);
 
 		/* Create a temporary identifier for this player */
@@ -71,7 +76,7 @@ public class GameState extends AppState{
 			socket.setGame(this);
 	    	SocketController socketController = new SocketController(socket, this);
 			socketController.linkUp();
-			socket.userJoin(username);
+			socket.userJoin(username,gameId);
 
 		}catch(Exception e){
 			e.printStackTrace();
@@ -88,7 +93,13 @@ public class GameState extends AppState{
 			player.update();
 			debugger.sendToScreen("position", player.getx(),player.gety());
 			debugger.sendToScreen("size", player.getWidth(),player.getHeight(),player.getCHeight(),player.getCHeight());
+			tileMap.setPosition(
+					(double)GeneralGraphicsLayer.WIDTH / 2 - player.getx(),
+					(double)GeneralGraphicsLayer.HEIGHT / 2 - player.gety()
+						);
 		}
+
+		
 		/* Check for networked players, then update them */
 		if(networkedPlayers.size() > 0){
 			for(NetPlayer netPlayer:networkedPlayers){
@@ -114,33 +125,45 @@ public class GameState extends AppState{
 		}
 	};
 	
-	public void addNetworkedPlayer(String username){
-		NetPlayer netPlayer = new NetPlayer(tileMap,username);
+	public void addNetworkedPlayer(String netName){
+		
+		NetPlayer netPlayer = new NetPlayer(tileMap,netName);
 		netPlayer.setPosition(0,0);
 		networkedPlayers.add(netPlayer);
+		
 	}
 	public void setNetworkedPlayerPosition(int x, int y){
 		networkedPlayers.get(0).setPosition(x,y);
 	}
 	
-	public void findAndUpdateNetPlayer(String uName, double x, double y){
+	/* Takes in a received player coordinate and applies it to the networkedPlayers
+	 * array. If the player is not found in the existing networkedPlayers array it is
+	 * added.
+	 * */
+	public void findAndUpdateNetPlayer(String uname, double x, double y){
 		
-		String temp = uName;
-		boolean matchFound = false;
+		// Locals
+		String temp 		= uname;
+		boolean matchFound 	= false;
+		
+		// Loop through networked players
 		for(NetPlayer netPlayer:networkedPlayers){
 			
-			System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.name + ".");
+			System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.username + ".");
 			
-			if(netPlayer.getUsername().equals(temp) && netPlayer.getUsername() != this.name){
+			// If arrayList netPlayer name equals the parameter user name and isn't equal to the current users name
+			if(netPlayer.getUsername().equals(temp) && !netPlayer.getUsername().equals(this.username)){
 				System.out.println("Updating " + netPlayer.getUsername() + " coordinates");
 //				System.out.println("Player found and updating!");
 				netPlayer.setPosition(x,y);
 				matchFound = true;
 			}
 		}
+		// If networked player was not found, add him
 		if(matchFound == false){
 			addNetworkedPlayer(temp);
 		}
+		
 	}
 	
 	
