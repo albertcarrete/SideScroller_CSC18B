@@ -12,20 +12,12 @@ import org.json.JSONObject;
 //import org.json.*;
 //import org.json.simple.*;
 //import org.json.simple.parser.JSONParser;
-
-
-
 import java.util.Iterator;
-
 import org.joda.time.DateTime;
-
 import overlays.Debugger;
 import appstate.CharacterSelectState;
 //import appstate.AppState;
 import appstate.GameState;
-
-import com.sun.jmx.snmp.Timestamp;
-
 import core.Passport;
 
 //import layers.GeneralGraphicsLayer;
@@ -58,7 +50,8 @@ public class SMSocket {
 		secondCounter = 0;
 		System.out.println("CONNECTING SOCKET");
 		socket = IO.socket("http://localhost:8080/");
-
+		dateTime = new DateTime();
+		
 //		socket = IO.socket("http://52.24.205.124/");
 //		socket = IO.socket("https://msgameserver.herokuapp.com/");
 		
@@ -234,9 +227,11 @@ public class SMSocket {
           			String username = (String)obj.get("n");
               		double xpos = ((Number)obj.get("x")).doubleValue();
               		double ypos = ((Number)obj.get("y")).doubleValue();
+              		long time 	= ((Number)obj.get("t")).longValue();
+
               		System.out.println("{ " + username + "," + ypos + "," + xpos + " }");
 //              		System.out.println("{ " + counter + " }");
-              		game.findAndUpdateNetPlayer(username, xpos, ypos);
+              		game.findAndUpdateNetPlayer(username, xpos, ypos,time);
               		
           		}catch(Exception e){
           			e.printStackTrace();
@@ -257,7 +252,7 @@ public class SMSocket {
       			
 //      			System.out.println("Coordinates received:");
       			try{
-	      			System.out.println(args[0]);
+//	      			System.out.println(args[0]);
 	  				JSONObject responseObject = new JSONObject(args[0].toString());
 	  				Iterator<?> keys = responseObject.keys();
 					
@@ -268,10 +263,11 @@ public class SMSocket {
 					    	String username = (String)key;
 					    	double xpos = ((Number)subObj.get("xpos")).doubleValue();
 					    	double ypos = ((Number)subObj.get("ypos")).doubleValue();
-					    	
-					    System.out.println("{ " + (String)key + " ,x: " + ypos + ", y: " + xpos + " }");
+					    	long time 	= ((Number)subObj.get("time")).longValue();
+
+//					    System.out.println("{ " + (String)key + " ,x: " + ypos + ", y: " + xpos + " }");
 	//				    System.out.println("{ " + counter + " }");
-					    game.findAndUpdateNetPlayer((String)key, xpos, ypos);
+					    game.findAndUpdateNetPlayer((String)key, xpos, ypos,time);
 				}
 
       				System.out.println(responseObject);
@@ -349,7 +345,48 @@ public class SMSocket {
           		clockSockets = true;
           		
       		}
-      	}).on("from_server", new Emitter.Listener(){
+      	}).on("action:fireball", new Emitter.Listener() {
+
+        	  @Override
+        	  public void call(Object... args) {   
+        		  System.out.println("Fireball was shot!");
+        		  try{
+            		  JSONObject responseObject 	= new JSONObject(args[0].toString());
+            		  String username 				= (String)responseObject.get("owner");
+            		  String projID 				= (String)responseObject.get("projID");
+            		  boolean facingRight 			= (boolean)responseObject.get("facingRight");
+            		  double xpos 	= ((Number)responseObject.get("xpos")).doubleValue();
+            		  double ypos 	= ((Number)responseObject.get("ypos")).doubleValue();
+            		  long time 	= ((Number)responseObject.get("time")).longValue();
+
+					    game.findAndUpdateNetPlayerProjectile((String)username,projID, xpos, ypos,time,facingRight);
+            		  
+        		  }catch(Exception e){
+        			  e.printStackTrace();
+        		  }
+//        		JSONObject obj = (JSONObject)args[0];
+        		  
+        	  }
+
+       }).on("register:playerHit", new Emitter.Listener() {
+
+     	  @Override
+     	  public void call(Object... args) {   
+     		  
+     		  try{
+         		  JSONObject responseObject 	= new JSONObject(args[0].toString());
+         		  String username 				= (String)responseObject.get("playerHit");
+
+         		  game.findAndKillPlayer(username);
+         		  
+     		  }catch(Exception e){
+     			  e.printStackTrace();
+     		  }
+//     		JSONObject obj = (JSONObject)args[0];
+     		  
+     	  }
+
+    }).on("from_server", new Emitter.Listener(){
       		
       		@Override
       		public void call(Object... args){
@@ -424,14 +461,43 @@ public class SMSocket {
 	      	obj.put("xpos", x);
 	      	obj.put("ypos", y);
 //			Timestamp timeStamp = new Timestamp(dateTime.getMillis());
-			dateTime = new DateTime();
-			obj.put("timestamp", dateTime.getMillis());
+			obj.put("timestamp", System.currentTimeMillis());
 //	      	obj.put("timestamp", date.now);
 	      }catch(Exception e){
 	      	e.printStackTrace();
 	      }
 	      
 		socket.emit("coordinates", obj);
+	}
+	public void sendProjectileCoordinates(String projecticleID, String projecticleOwner,double x, double y,boolean facingRight){
+	      JSONObject obj = new JSONObject();
+	      try{
+	    	obj.put("owner",projecticleOwner);
+	    	obj.put("projID", projecticleID);
+	      	obj.put("xpos", x);
+	      	obj.put("ypos", y);
+	      	obj.put("facingRight",facingRight);
+//			Timestamp timeStamp = new Timestamp(dateTime.getMillis());
+			obj.put("timestamp", System.currentTimeMillis());
+//	      	obj.put("timestamp", date.now);
+	      }catch(Exception e){
+	      	e.printStackTrace();
+	      }
+	      
+		socket.emit("projecticleCoordinates", obj);
+	}
+	public void playerHit(String username){
+		JSONObject obj = new JSONObject();
+		
+		try{
+			
+			obj.put("username",username);
+			obj.put("gameId", _p.getGameId());
+			socket.emit("action:playerHit", obj);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	public void userJoin(String username, String gameId){
 		

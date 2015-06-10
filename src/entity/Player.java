@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 //import org.json.JSONObject;
-
 import overlays.Debugger;
 
 //import com.github.nkzawa.engineio.client.Socket;
@@ -144,7 +143,33 @@ public class Player extends MapObject{
 	public void setGliding(boolean b) { 
 		gliding = b;
 	}
+	public void checkAttack(ArrayList<NetPlayer> networkedPlayers){
+		
+
+		for(int i = 0; i < networkedPlayers.size(); i++){
+			
+			NetPlayer e = networkedPlayers.get(i);
+			
+			for(int j = 0; j < fireBalls.size(); j++){
+				
+				if(fireBalls.get(j).intersects(e)){
+					System.out.println("HITTTT!!!!!!!!!");
+					socket.playerHit(e.getUsername());
+					
+//					e.hit(projectileDamage);
+					fireBalls.get(j).setHit();
+					break;
+				}
+				
+			}
 	
+		}
+
+
+		
+		
+		
+	}
 	private void getNextPosition() {
 		
 		// movement
@@ -223,9 +248,11 @@ public class Player extends MapObject{
 		fire += 1;
 		if(fire > maxFire) fire = maxFire;
 		if(firing && currentAction != FIREBALL){
-			FireBall fb = new FireBall(tileMap,facingRight);
+			FireBall fb = new FireBall(tileMap,facingRight,socket);
 			fb.setPosition(x,y);
 			fireBalls.add(fb);
+			socket.sendProjectileCoordinates("666",username,x,y,facingRight);
+			System.out.println("FIREBALL!!!!!!!");
 //			if(fire > fireCost){
 //				fire -= fireCost;
 //				

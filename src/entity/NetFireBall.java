@@ -8,18 +8,16 @@ import javax.imageio.ImageIO;
 import socket.SMSocket;
 import tileMap.TileMap;
 
-public class FireBall extends MapObject{
+public class NetFireBall extends MapObject{
 	
 	private boolean hit;
 	private boolean remove;
 	private BufferedImage[] sprites;
 	private BufferedImage[] hitSprites;
-	SMSocket socket;
 	
-	public FireBall(TileMap tm, boolean right, SMSocket importedSocket){
+	public NetFireBall(TileMap tm, boolean right){
 		
 		super(tm);
-		socket = importedSocket;
 		moveSpeed = 3.8;
 		if(right){
 			dx = moveSpeed;
@@ -87,7 +85,6 @@ public class FireBall extends MapObject{
 	public void update(){
 		checkTileMapCollision();
 		setPosition(xtemp,ytemp);
-//		socket.sendProjectileCoordinates("666","rando",xtemp,ytemp);
 
 		if(dx == 0 && !hit){
 			setHit();
@@ -125,3 +122,4 @@ public class FireBall extends MapObject{
 	}
 	
 }
+

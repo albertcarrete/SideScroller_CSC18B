@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class Debugger {
 	
-	private HashMap<String,int[]> int_params;
+	private HashMap<String,int[]> 		int_params;
 	private HashMap<String,double[]> 	dbl_params;
-	private HashMap<String,boolean[]> bol_params;
+	private HashMap<String,boolean[]> 	bol_params;
 	
 	public Debugger(){
 		
@@ -28,6 +28,7 @@ public class Debugger {
 	public void sendToScreen(String name, double ... params){
 		dbl_params.put(name,params);
 	}
+	/*Overloaded input*/
 	public void sendToScreen(String name, boolean ... params){
 		bol_params.put(name,params);
 	}

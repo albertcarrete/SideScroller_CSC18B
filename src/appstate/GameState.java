@@ -1,8 +1,10 @@
 package appstate;
 
 
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Random;
 
 import core.Passport;
@@ -10,6 +12,7 @@ import overlays.Debugger;
 import socket.SocketController;
 import entity.NetPlayer;
 import entity.Player;
+import entity.StatScreen;
 import socket.SMSocket;
 import tileMap.Background;
 import tileMap.TileMap;
@@ -28,14 +31,18 @@ public class GameState extends AppState{
 	/*MULTIPLAYER*/
 	private SMSocket socket;
 	
+	private StatScreen statScreen;
+	
 	// Passport
 	public String username;
 	private String gameId;
 	private ArrayList<NetPlayer> networkedPlayers;
 	
 	private String name;
-
+	ListIterator<NetPlayer>it;
 	Passport _p;
+	Font standard;
+	boolean deathScreen;
 	
 	public GameState(AppStateManager asm, GeneralGraphicsLayer layer, Passport passport){
 				
@@ -45,14 +52,18 @@ public class GameState extends AppState{
 		this._p = passport;
 //		debugOverlay = new DebugOverlay();
 		networkedPlayers = new ArrayList<NetPlayer>();
-
+		it = networkedPlayers.listIterator();
 	}
 	/* Init runs when this application state is set */
 	public void init(){
 		
+		int style = Font.PLAIN;
+		standard = new Font ("Arial", style , 12);
+		
 		username 	= _p.getUsername();
 		gameId 		= _p.getGameId();
 		
+		deathScreen = false;
 		/* Build Map */
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/customtileset.gif");
@@ -69,6 +80,7 @@ public class GameState extends AppState{
 		
 		/* Position current player's pawn */
 		debugger = new Debugger();
+		statScreen = new StatScreen(StatScreen.NONE);
 		
 		/*Attempt to connect to socket*/
 		try{
@@ -97,15 +109,25 @@ public class GameState extends AppState{
 					(double)GeneralGraphicsLayer.WIDTH / 2 - player.getx(),
 					(double)GeneralGraphicsLayer.HEIGHT / 2 - player.gety()
 						);
-		}
+			player.checkAttack(networkedPlayers);
 
+		}
+		for(int i = 0; i < networkedPlayers.size(); i++){
+			networkedPlayers.get(i).update();
+		}
+		
+		
 		
 		/* Check for networked players, then update them */
-		if(networkedPlayers.size() > 0){
-			for(NetPlayer netPlayer:networkedPlayers){
-				netPlayer.update();
-			}
-		}
+//			if(it.hasNext()){
+//				it.next().update();
+//			}			
+		
+//		if(networkedPlayers.size() > 0){
+//			for(NetPlayer netPlayer:networkedPlayers){
+//				netPlayer.update();
+//			}
+//		}
 		
 	};
 	
@@ -113,15 +135,21 @@ public class GameState extends AppState{
 		/*TODO: delete this function from abstract */
 	};
 	public void drawToScreen(java.awt.Graphics2D g){
-		
+		g.setFont(standard);
 		bg.draw(g);
 		tileMap.draw(g);
 		player.draw(g);
 		debugger.draw(g);
+		statScreen.draw(g);
+		
 		if(networkedPlayers.size() > 0){
-			for(NetPlayer netPlayer:networkedPlayers){
-				netPlayer.draw(g);
+			
+			for(int i = 0; i < networkedPlayers.size(); i++){
+				networkedPlayers.get(i).draw(g);
 			}
+//			for(NetPlayer netPlayer:networkedPlayers){
+//				netPlayer.draw(g);
+//			}
 		}
 	};
 	
@@ -140,7 +168,7 @@ public class GameState extends AppState{
 	 * array. If the player is not found in the existing networkedPlayers array it is
 	 * added.
 	 * */
-	public void findAndUpdateNetPlayer(String uname, double x, double y){
+	public void findAndUpdateNetPlayer(String uname, double x, double y, long t){
 		
 		// Locals
 		String temp 		= uname;
@@ -149,13 +177,20 @@ public class GameState extends AppState{
 		// Loop through networked players
 		for(NetPlayer netPlayer:networkedPlayers){
 			
-			System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.username + ".");
+//			System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.username + ".");
 			
 			// If arrayList netPlayer name equals the parameter user name and isn't equal to the current users name
 			if(netPlayer.getUsername().equals(temp) && !netPlayer.getUsername().equals(this.username)){
-				System.out.println("Updating " + netPlayer.getUsername() + " coordinates");
+//				System.out.println("Updating " + netPlayer.getUsername() + " coordinates");
 //				System.out.println("Player found and updating!");
-				netPlayer.setPosition(x,y);
+				if(!netPlayer.currentValueSet){
+					netPlayer.setCurrentPosition(x,y,t);
+				}else{
+					netPlayer.setCurrentToPrev();
+					netPlayer.setCurrentPosition(x,y,t);
+
+//					netPlayer.setPosition(x,y);
+				}
 				matchFound = true;
 			}
 		}
@@ -166,7 +201,51 @@ public class GameState extends AppState{
 		
 	}
 	
+	public void findAndUpdateNetPlayerProjectile(String username,String projID, double x, double y, long t,boolean facingRight){
+		for(NetPlayer netPlayer:networkedPlayers){
+			
+//			System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.username + ".");
+			
+			// If arrayList netPlayer name equals the parameter user name and isn't equal to the current users name
+			if(netPlayer.getUsername().equals(username) && !netPlayer.getUsername().equals(this.username)){
+				netPlayer.setFacingRight(facingRight);
+				netPlayer.triggerFireBall(x, y);
+			}
+		}
+	}
 	
+	public void findAndKillPlayer(String uname){
+		
+		if(uname.equals(this.username)){
+			player.setPosition(100,100);
+			statScreen.setState(StatScreen.DEATH);
+		}else{
+			// Locals
+			String temp 		= uname;
+			boolean matchFound 	= false;
+			
+			// Loop through networked players
+			outerloop:
+			for(NetPlayer netPlayer:networkedPlayers){
+				
+//				System.out.println("Comparing " + netPlayer.getUsername() + " with " + this.username + ".");
+				
+				// If arrayList netPlayer name equals the parameter user name and isn't equal to the current users name
+				if(netPlayer.getUsername().equals(temp) && !netPlayer.getUsername().equals(this.username)){
+//					System.out.println("Updating " + netPlayer.getUsername() + " coordinates");
+//					System.out.println("Player found and updating!");
+					netPlayer.setPosition(100, 100);
+					matchFound = true;
+				}
+				
+				if(matchFound){
+					break outerloop;
+				}
+			}	
+
+		}
+			
+	}
 	
 	public void keyPressed(int k){
 		if(k==KeyEvent.VK_ENTER){
