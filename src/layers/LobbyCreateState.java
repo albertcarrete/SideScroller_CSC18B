@@ -129,7 +129,7 @@ public class LobbyCreateState extends JPanel{
 //		try{
 		
 			Boolean success = false;
-			URL url = new URL("http://localhost:8080/api/games");
+			URL url = new URL("http://52.24.205.124/api/games");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");

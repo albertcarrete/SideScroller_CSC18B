@@ -258,6 +258,7 @@ public class CharacterSelectState extends AppState{
 	}
 	public void startGame(){
 		asm.setState(AppStateManager.GAMESTATE);
+		
 	}
 	public void keyPressed(int k){
 		if(k==KeyEvent.VK_ENTER){

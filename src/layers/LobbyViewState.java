@@ -139,7 +139,7 @@ public class LobbyViewState extends JPanel{
 		
 		boolean success = false;
 		
-		URL url = new URL("http://localhost:8080/api/games/id/"+ selectedLobbyID);
+		URL url = new URL("http://52.24.205.124/api/games/id/"+ selectedLobbyID);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
 		conn.setRequestMethod("PUT");
@@ -199,7 +199,7 @@ public class LobbyViewState extends JPanel{
 	private void sendGet() throws Exception{
 		
 		// URL to query
-		String url = "http://localhost:8080/api/games/Lobby";
+		String url = "http://52.24.205.124/api/games/Lobby";
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		

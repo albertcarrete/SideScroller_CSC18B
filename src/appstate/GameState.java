@@ -112,7 +112,12 @@ public class GameState extends AppState{
 
 
 		player = new Player(tileMap,socket,username,debugger);
-		player.setPosition(300, 125);
+		Random random = new Random();
+		int randomNumber = random.nextInt(safeSpawns.size() - 1) + 1;
+		int spawn[] = new int[2];
+		spawn = safeSpawns.get(randomNumber);
+		
+		player.setPosition(spawn[0],spawn[1]);
 	};
 	
 	public void update(){
