@@ -4,6 +4,7 @@ package appstate;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class GameState extends AppState{
 		
 	/* CORE */
 	private AppStateManager asm;
-//	private GeneralGraphicsLayer layer;
+	private GeneralGraphicsLayer gLayer;
 	private TileMap tileMap;
 	private Player player;
 	private Background bg;
@@ -43,16 +44,30 @@ public class GameState extends AppState{
 	Passport _p;
 	Font standard;
 	boolean deathScreen;
+	long deathCounter;
 	
-	public GameState(AppStateManager asm, GeneralGraphicsLayer layer, Passport passport){
-				
+	HashMap<Integer,int[]> safeSpawns;
+	
+	public GameState(AppStateManager asm, GeneralGraphicsLayer gLayer, Passport passport){
 		this.asm = asm;
-//		this.layer = layer;
-		this.username = layer.username;
+		this.gLayer = gLayer;
+		this.username = gLayer.username;
 		this._p = passport;
 //		debugOverlay = new DebugOverlay();
 		networkedPlayers = new ArrayList<NetPlayer>();
 		it = networkedPlayers.listIterator();
+					
+		safeSpawns = new HashMap<Integer,int[]>();		
+		safeSpawns.put(1, new int[]{300,230});
+		safeSpawns.put(2, new int[]{50,280});
+		safeSpawns.put(3, new int[]{550,280});
+		safeSpawns.put(4, new int[]{550,400});
+		safeSpawns.put(5, new int[]{50,400});
+		safeSpawns.put(6, new int[]{50,490});
+		safeSpawns.put(7, new int[]{540,490});
+
+		
+		
 	}
 	/* Init runs when this application state is set */
 	public void init(){
@@ -64,10 +79,11 @@ public class GameState extends AppState{
 		gameId 		= _p.getGameId();
 		
 		deathScreen = false;
+		deathCounter = 0;
 		/* Build Map */
 		tileMap = new TileMap(30);
-		tileMap.loadTiles("/Tilesets/customtileset.gif");
-		tileMap.loadMap("/Maps/level1-1.map");
+		tileMap.loadTiles("/Tilesets/customtileset2.gif");
+		tileMap.loadMap("/Maps/level1-2.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
 
@@ -80,7 +96,7 @@ public class GameState extends AppState{
 		
 		/* Position current player's pawn */
 		debugger = new Debugger();
-		statScreen = new StatScreen(StatScreen.NONE);
+		statScreen = new StatScreen(StatScreen.NONE,gLayer);
 		
 		/*Attempt to connect to socket*/
 		try{
@@ -96,13 +112,31 @@ public class GameState extends AppState{
 
 
 		player = new Player(tileMap,socket,username,debugger);
-		player.setPosition(100, 100);
+		player.setPosition(300, 125);
 	};
 	
 	public void update(){
 		/* HACK: If player is not setup yet, don't update */
 		if(player != null){
-			player.update();
+			if(statScreen.getState() != StatScreen.DEATH){
+				player.update();				
+			}else{
+				player.setPosition(80, 80);
+				player.update();
+				if(deathCounter == 500){
+					
+					Random random = new Random();
+					int randomNumber = random.nextInt(safeSpawns.size() - 1) + 1;
+					int spawn[] = new int[2];
+					spawn = safeSpawns.get(randomNumber);
+					
+					player.setPosition(spawn[0],spawn[1]);
+					deathCounter = 0;
+					statScreen.setState(StatScreen.NONE);
+					
+				}
+				deathCounter++;
+			}
 			debugger.sendToScreen("position", player.getx(),player.gety());
 			debugger.sendToScreen("size", player.getWidth(),player.getHeight(),player.getCHeight(),player.getCHeight());
 			tileMap.setPosition(
@@ -110,12 +144,15 @@ public class GameState extends AppState{
 					(double)GeneralGraphicsLayer.HEIGHT / 2 - player.gety()
 						);
 			player.checkAttack(networkedPlayers);
+			
 
 		}
 		for(int i = 0; i < networkedPlayers.size(); i++){
 			networkedPlayers.get(i).update();
 		}
 		
+
+
 		
 		
 		/* Check for networked players, then update them */
@@ -138,7 +175,9 @@ public class GameState extends AppState{
 		g.setFont(standard);
 		bg.draw(g);
 		tileMap.draw(g);
-		player.draw(g);
+		if(statScreen.getState() != StatScreen.DEATH){
+			player.draw(g);		
+		}
 		debugger.draw(g);
 		statScreen.draw(g);
 		
@@ -217,7 +256,6 @@ public class GameState extends AppState{
 	public void findAndKillPlayer(String uname){
 		
 		if(uname.equals(this.username)){
-			player.setPosition(100,100);
 			statScreen.setState(StatScreen.DEATH);
 		}else{
 			// Locals
@@ -234,7 +272,7 @@ public class GameState extends AppState{
 				if(netPlayer.getUsername().equals(temp) && !netPlayer.getUsername().equals(this.username)){
 //					System.out.println("Updating " + netPlayer.getUsername() + " coordinates");
 //					System.out.println("Player found and updating!");
-					netPlayer.setPosition(100, 100);
+					netPlayer.setPosition(80, 80);
 					matchFound = true;
 				}
 				

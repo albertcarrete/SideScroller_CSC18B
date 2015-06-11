@@ -49,10 +49,10 @@ public class SMSocket {
 		clockSockets = false;
 		secondCounter = 0;
 		System.out.println("CONNECTING SOCKET");
-		socket = IO.socket("http://localhost:8080/");
+//		socket = IO.socket("http://localhost:8080/");
 		dateTime = new DateTime();
 		
-//		socket = IO.socket("http://52.24.205.124/");
+		socket = IO.socket("http://52.24.205.124/");
 //		socket = IO.socket("https://msgameserver.herokuapp.com/");
 		
 		

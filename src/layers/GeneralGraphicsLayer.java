@@ -36,7 +36,7 @@ public class GeneralGraphicsLayer extends JPanel implements Runnable {
 	VEIN _v;
 	public static final int WIDTH = 600;  // 320
 	public static final int HEIGHT = 330; // 240
-	public static final int SCALE = 1; // Master Scale for Graphics
+	public static final int SduckCALE = 1; // Master Scale for Graphics
 	
 	public int screenWidth;
 	public int screenHeight;

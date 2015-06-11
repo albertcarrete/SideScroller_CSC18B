@@ -36,7 +36,7 @@ public class NetFireBall extends MapObject{
 			
 			BufferedImage spritesheet = ImageIO.read(
 				getClass().getResourceAsStream(
-					"/Sprites/Player/fireball.gif"
+					"/Sprites/Player/darkmefireball_invert.gif"
 				)
 			);
 			sprites = new BufferedImage[4];
