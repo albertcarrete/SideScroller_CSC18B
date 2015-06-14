@@ -1,7 +1,12 @@
 package core;
+/*
+ * Passport.java 
+ * -------------
+ * Keeps track of who is logged in and which
+ * game they belong to. 
+ */
 
 public class Passport {
-	
 	
 	// Player Credentials
 	private String username;

@@ -14,9 +14,10 @@ import layers.*;
 import overlays.SettingsOverlay;
 import serializable.ReadSettingsFile;
 
-/* LayeredPanel
- * This JPanel class is the root panel that all the other app panels connect 
- * to and display information. 
+/*	LayeredPanel.java
+ *	------------
+ *	The root panel that all the other JPanels for this
+ *	game use to connect to and display information. 
  */
 public class LayeredPanel extends JPanel implements Runnable, KeyListener{
 	
