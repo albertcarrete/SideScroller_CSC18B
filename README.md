@@ -13,5 +13,13 @@ Multiplayer sidescroller game utilizing Socket.io and MongoDB through a Node.js 
 * Right click 'resources' in Package Explorer -> Build Path -> Use as source folder
 * Run as Application
 
+#### Supplementary
+* Authors: Albert Carrete, Khallid Coulter
+* [Write up for this project](https://docs.google.com/document/d/1Zceg6gmY4vd8RFL72V1AXRl-02W8YsFTISQaTWY6zqE/edit?usp=sharing)
+* Database: MongoDB
+* Server: Node
+* Provider: Amazon
+
+#### Additional
 
 [Backup of Required Jars](https://drive.google.com/folderview?id=0B8ffLvSxWiImfnBzdkJmekMzV0NqSXVsdGowd2xDTEpYYTBrVnJkSmJQX0JOTTliU3lsQkU&usp=sharing)
